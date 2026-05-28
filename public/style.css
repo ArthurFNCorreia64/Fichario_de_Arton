@@ -1,492 +1,604 @@
 /* ==========================================================================
-   🧙‍♂️ ESTILO TORMENTA 20 - FICHA DIGITAL JDOA
+   FICHA DIGITAL TORMENTA 20 (JOGO DO ANO) - ESTILO TEMA NOTURNO
+   Inspirado na identidade visual oficial da Tormenta: Rubro, Ferro e Ouro
    ========================================================================== */
 
-/* Importação de fontes temáticas (Estilo Épico e Limpo para Leitura) */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Metamorphous&family=Nunito:wght@400;600;800&display=swap');
+/* Importação de fontes de fantasia e legibilidade */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --vermelho-tormenta: #b30000;
-    --vermelho-escuro: #7a0000;
-    --preto-borda: #1a1a1a;
-    --fundo-pergaminho: #fcfbfa;
-    --fundo-site: #121212;
-    --texto-escuro: #2c3e50;
-    --fonte-titulos: 'Metamorphous', 'Cinzel', serif;
-    --fonte-dados: 'Nunito', sans-serif;
+    /* Paleta de Cores da Tormenta (Dark Mode) */
+    --bg-principal: #0d0d0f;       /* Abismo escuro de fundo */
+    --bg-bloco: #18181c;           /* Placas de ferro/muralha escuro */
+    --bg-input: #0f0f12;           /* Fundo dos campos de digitação */
+    
+    --vermelho-tormenta: #9c1c1c;  /* O rubro vivo da Tormenta */
+    --vermelho-profundo: #5c0f0f;  /* Sangue coagulado / Sombras */
+    --vermelho-brilho: #d93838;    /* Energia da Tormenta ativa */
+    
+    --ouro-velho: #dfb15b;         /* Cor para totais e bônus calculados */
+    --ouro-brilho: #f3cb7a;        /* Destaque para focos */
+    
+    --texto-principal: #e3e3e6;   /* Cinza claro para leitura confortável */
+    --texto-mutado: #9a9aa4;      /* Cinza cinzento para labels secundárias */
+    
+    /* Fontes */
+    --fonte-fantasia: 'Cinzel', 'Times New Roman', serif;
+    --fonte-leitura: 'Inter', 'Segoe UI', sans-serif;
+    
+    /* Bordas e Efeitos */
+    --borda-ferro: 2px solid #2d2d35;
+    --borda-rubro: 2px solid var(--vermelho-tormenta);
+    --sombra-bloco: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
-/* Configurações Gerais do Tabuleiro */
-body {
-    background-color: var(--fundo-site);
-    background-image: radial-gradient(rgba(179, 0, 0, 0.1) 1px, transparent 0);
-    background-size: 24px 24px;
-    color: var(--texto-escuro);
-    font-family: var(--fonte-dados);
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Painel de Controle Superior (Backup/Importar) */
-#painel-controle {
-    width: 100%;
-    max-width: 1100px;
-    background: #1a1a1a;
-    border: 3px solid var(--vermelho-tormenta);
-    padding: 15px 20px;
+/* Configurações Gerais da Página */
+* {
     box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-principal);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(156, 28, 28, 0.15) 0%, transparent 50%),
+        linear-gradient(to bottom, rgba(13, 13, 15, 0.8), rgba(13, 13, 15, 1));
+    color: var(--texto-principal);
+    font-family: var(--fonte-leitura);
+    line-height: 1.5;
+    padding: 20px 10px;
+}
+
+/* Customização de Scrollbar (Barra de rolagem temática) */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-principal);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--vermelho-profundo);
+    border: 2px solid var(--bg-principal);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vermelho-tormenta);
+}
+
+/* ==========================================================================
+   PAINEL DE CONTROLE (HEADER)
+   ========================================================================== */
+#painel-controle {
+    background: linear-gradient(135deg, var(--vermelho-profundo), #210505);
+    border: 2px solid var(--ouro-velho);
+    border-radius: 8px;
+    box-shadow: var(--sombra-bloco), inset 0 0 15px rgba(0, 0, 0, 0.5);
+    padding: 20px;
     margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#painel-controle::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border: 1px solid rgba(223, 177, 91, 0.3);
+    margin: 3px;
+    pointer-events: none;
+    border-radius: 5px;
 }
 
 #painel-controle h1 {
-    color: #fff;
-    font-family: var(--fonte-titulos);
-    font-size: 1.4rem;
-    margin: 0;
-    text-transform: uppercase;
+    font-family: var(--fonte-fantasia);
+    color: var(--ouro-velho);
+    font-size: 1.8rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 15px;
     letter-spacing: 1px;
 }
 
-.botoes-backup button, #label-carregar {
-    background: var(--vermelho-tormenta);
-    color: #fff;
-    border: 2px solid #fff;
-    padding: 8px 16px;
-    font-family: var(--fonte-titulos);
-    font-size: 0.85rem;
+.botoes-backup {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Estilização de Botões e Labels Interativas */
+button, #label-carregar {
+    background: linear-gradient(to bottom, #2a2a30, #1c1c21);
+    border: 1px solid var(--vermelho-tormenta);
+    color: var(--texto-principal);
+    font-family: var(--fonte-fantasia);
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
+    transition: all 0.2s ease-in-out;
+    text-shadow: 1px 1px 2px black;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
     display: inline-block;
 }
 
-.botoes-backup button:hover, #label-carregar:hover {
-    background: var(--vermelho-escuro);
-    transform: scale(1.03);
+button:hover, #label-carregar:hover {
+    background: linear-gradient(to bottom, var(--vermelho-tormenta), var(--vermelho-profundo));
+    border-color: var(--ouro-velho);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(217, 56, 56, 0.6);
+    transform: translateY(-1px);
 }
 
-/* Formulário Principal */
-#ficha-form {
-    width: 100%;
-    max-width: 1100px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+button:active {
+    transform: translateY(1px);
 }
 
 /* ==========================================================================
-   🗂️ AS SANFONAS (DETAILS / SUMMARY) - IGUAL A FICHA IMPRESSA
+   FORMULÁRIO E BLOCOS DA FICHA (ACCORDIONS)
    ========================================================================== */
+#ficha-form {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
 .bloco-ficha {
-    background-color: var(--fundo-pergaminho);
-    border: 3px solid var(--preto-borda);
-    box-shadow: 5px 5px 0px var(--vermelho-tormenta);
-    position: relative;
-    transition: margin 0.3s ease;
+    background-color: var(--bg-bloco);
+    border: var(--borda-ferro);
+    border-radius: 6px;
+    box-shadow: var(--sombra-bloco);
+    margin-bottom: 20px;
+    overflow: hidden;
 }
 
-/* A Barra do Título que NUNCA some ao minimizar */
+/* Cabeçalho Sanfona (<summary>) - Formato de Banner Pontiagudo Trasparente */
 .cabecalho-sanfona {
-    background-color: var(--preto-borda);
-    border-bottom: 3px solid var(--vermelho-tormenta);
-    color: #fff;
-    padding: 12px 20px;
+    background: linear-gradient(90deg, var(--vermelho-profundo) 0%, #210505 60%, var(--bg-bloco) 100%);
+    padding: 12px 18px;
     cursor: pointer;
-    list-style: none; /* Esconde a setinha nativa feia */
-    display: flex;
-    align-items: center;
+    border-bottom: 2px solid var(--vermelho-tormenta);
     user-select: none;
+    outline: none;
+    transition: background 0.3s;
 }
 
-.cabecalho-sanfona::-webkit-details-marker {
-    display: none; /* Esconde a seta no Chrome/Safari */
-}
-
-/* Indicador de abre/fecha customizado estilo Tormenta */
-.cabecalho-sanfona::before {
-    content: '❖';
-    color: var(--vermelho-tormenta);
-    margin-right: 12px;
-    font-size: 1.2rem;
-    transition: transform 0.2s ease;
-}
-
-details[open] .cabecalho-sanfona::before {
-    transform: rotate(45deg);
-    color: #ffcc00; /* Brilho dourado quando aberto */
+.cabecalho-sanfona:hover {
+    background: linear-gradient(90deg, var(--vermelho-tormenta) 0%, var(--vermelho-profundo) 70%, var(--bg-bloco) 100%);
 }
 
 .cabecalho-sanfona h2 {
-    font-family: var(--fonte-titulos);
-    font-size: 1.25rem;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-family: var(--fonte-fantasia);
+    color: #ffffff;
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
     display: inline-block;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Espaçamento interno do conteúdo quando a sanfona expande */
-.bloco-ficha > div, 
-.bloco-ficha > table, 
-.bloco-ficha > textarea {
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.aviso-aula {
-    margin: 0 0 15px 20px;
-    font-size: 0.85rem;
-    color: #555;
-    font-style: italic;
-}
-
-/* ==========================================================================
-   📐 ESTILIZAÇÃO DOS GRIDS E CAMPOS DE ENTRADA
-   ========================================================================== */
-
-/* Layout de inputs comuns */
-.campo {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.campo label {
-    font-family: var(--fonte-titulos);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    color: var(--preto-borda);
-}
-
-input[type="text"], input[type="number"], select, textarea {
-    background-color: #fff;
-    border: 2px solid var(--preto-borda);
-    padding: 8px;
-    font-family: var(--fonte-dados);
-    font-size: 1rem;
-    color: #1a1a1a;
-    border-radius: 0px; /* Cantos retos retos igual a imagem */
+/* Inputs, Selects e Textareas Gerais */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    background-color: var(--bg-input);
+    border: 1px solid #3d3d4a;
+    color: var(--texto-principal);
+    font-family: var(--fonte-leitura);
+    padding: 8px 12px;
+    border-radius: 4px;
+    width: 100%;
+    transition: all 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
+    border-color: var(--vermelho-brilho);
+    box-shadow: 0 0 8px rgba(217, 56, 56, 0.4);
     outline: none;
-    border-color: var(--vermelho-tormenta);
-    box-shadow: 0 0 5px rgba(179,0,0,0.3);
+    background-color: #14141a;
 }
 
-/* Grid Seção 1: Dados Básicos */
-.grid-dados {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.campo-destaque input {
-    border: 2px solid var(--vermelho-tormenta);
-    background-color: #fff5f5;
-    font-weight: 800;
-    font-size: 1.2rem;
+/* Inputs Calculados Automáticos (Readonly) - Estilo Ouro Velho */
+input[readonly] {
+    background-color: #211c15 !important;
+    color: var(--ouro-velho) !important;
+    border-color: #54442b !important;
+    font-weight: 700;
     text-align: center;
-    color: var(--vermelho-tormenta);
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(223, 177, 91, 0.2);
 }
 
-/* Grid Seção 2: Atributos (Formato robusto da imagem) */
-.grid-atributos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    justify-content: center;
+label {
+    font-size: 0.85rem;
+    color: var(--texto-mutado);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    display: block;
 }
 
-.campo-atributo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #fff;
-    border: 2px solid var(--preto-borda);
-    border-top: 6px solid var(--vermelho-tormenta); /* Faixa vermelha da imagem */
-    padding: 10px;
-    box-shadow: 3px 3px 0px rgba(0,0,0,0.1);
-}
-
-.campo-atributo label {
-    font-family: var(--fonte-titulos);
-    font-size: 0.9rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.campo-atributo input {
-    width: 60px;
-    height: 45px;
-    font-size: 1.4rem;
-    text-align: center;
-    font-weight: bold;
-    border: 2px solid var(--preto-borda);
+/* Checkboxes nativos estilizados pelo browser moderno */
+input[type="checkbox"] {
+    accent-color: var(--vermelho-tormenta);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
 
 /* ==========================================================================
-   ❤️ STATUS VITAIS, MANA E DEFESA (Os Escudos da Imagem)
+   SEÇÃO 1: DADOS BÁSICOS
    ========================================================================== */
+.grid-dados {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
 
+.campo-destaque label {
+    color: var(--vermelho-brilho);
+}
+.campo-destaque input {
+    border: 1px solid var(--vermelho-tormenta);
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+    text-align: center;
+}
+
+/* ==========================================================================
+   SEÇÃO 2: ATRIBUTOS (MODIFICADORES DIRETOS)
+   Estilizados como os cartuchos ornamentados da ficha impressa
+   ========================================================================== */
+.grid-atributos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.campo-atributo {
+    background: linear-gradient(135deg, #241414 0%, #1a1a1e 100%);
+    border: 2px solid var(--vermelho-tormenta);
+    border-radius: 8px;
+    padding: 12px 8px;
+    text-align: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.campo-atributo:hover {
+    transform: scale(1.03);
+    border-color: var(--vermelho-brilho);
+}
+
+/* "Asas" decorativas laterais emulando os recortes pontiagudos da folha oficial */
+.campo-atributo::before, .campo-atributo::after {
+    content: '';
+    position: absolute;
+    top: 35%;
+    width: 4px;
+    height: 30%;
+    background-color: var(--vermelho-tormenta);
+}
+.campo-atributo::before { left: -3px; border-radius: 2px 0 0 2px; }
+.campo-atributo::after { right: -3px; border-radius: 0 2px 2px 0; }
+
+.campo-atributo label {
+    font-family: var(--fonte-fantasia);
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.campo-atributo input[type="number"] {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: var(--vermelho-brilho);
+    padding: 0;
+}
+.campo-atributo input[type="number"]:focus {
+    box-shadow: none;
+    color: #fff;
+}
+
+/* Remove as setinhas padrão do input number para ficar limpo */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+/* ==========================================================================
+   SEÇÃO 3: STATUS, DEFESA E CONJURAÇÃO
+   ========================================================================== */
 .sub-grid-status {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
     padding: 20px;
 }
 
 .sub-bloco {
-    background: #fff;
-    border: 2px solid var(--preto-borda);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid #2a2a33;
+    border-radius: 6px;
     padding: 15px;
-    box-sizing: border-box;
 }
 
 .sub-bloco h3 {
-    font-family: var(--fonte-titulos);
+    font-family: var(--fonte-fantasia);
+    color: var(--ouro-velho);
     font-size: 0.95rem;
-    margin: 0 0 15px 0;
-    text-transform: uppercase;
-    color: var(--vermelho-tormenta);
-    border-bottom: 2px dashed #ccc;
-    padding-bottom: 5px;
-}
-
-/* Sub-sanfona configurável de PV/PM */
-details.sub-bloco {
-    padding: 0;
-}
-
-.cabecalho-sub-sanfona {
-    padding: 12px 15px;
-    background: #f0eded;
-    cursor: pointer;
-    list-style: none;
-    border-bottom: 2px solid var(--preto-borda);
-}
-
-.cabecalho-sub-sanfona h3 {
-    margin: 0;
-    border: none;
-    padding: 0;
-    display: inline;
+    border-bottom: 1px solid var(--vermelho-profundo);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
 }
 
 .conteudo-sub-bloco {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
-/* Inputs Lado a Lado (PV e PM Atuais / Totais) */
 .campo-duplo {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: bold;
-    font-size: 1.1rem;
     margin-bottom: 12px;
+    background-color: var(--bg-input);
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid #22222a;
 }
 
 .campo-duplo label {
-    font-family: var(--fonte-titulos);
-    font-size: 0.85rem;
-    width: 45px;
+    margin-bottom: 0;
+    min-width: 65px;
+    font-weight: 700;
 }
 
 .campo-duplo input {
-    width: 70px;
+    border: none;
+    padding: 4px;
     text-align: center;
+    font-size: 1.1rem;
 }
 
-.campo-duplo input[readonly] {
-    background-color: #eee;
-    color: #555;
-}
+/* Destaque específico para PV (Verde Muted/Tranquilo) e PM (Azul Muted) se desejar, 
+   mas mantendo a identidade, usamos tons rubros/escuros. */
+#pv-atual, #pv-max { color: #ff5252; font-weight: bold; }
+#pm-atual, #pm-max { color: #448aff; font-weight: bold; }
 
 .campo-checkbox {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 10px 0;
-    font-size: 0.85rem;
-    font-weight: bold;
+    margin: 12px 0;
+}
+.campo-checkbox label {
+    margin-bottom: 0;
+    cursor: pointer;
 }
 
 /* ==========================================================================
-   ⚔️ TABELA DE PERÍCIAS (Visual Compacto da Ficha Físicas)
+   SEÇÃO 4: PERÍCIAS (TABELA)
    ========================================================================== */
-
 #tabela-pericias {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    text-align: left;
 }
 
-#tabela-pericias th {
-    background-color: var(--preto-borda);
-    color: #fff;
-    font-family: var(--fonte-titulos);
-    font-size: 0.8rem;
-    padding: 8px;
-    text-transform: uppercase;
-    text-align: center;
+#tabela-pericias thead th {
+    background-color: #121215;
+    font-family: var(--fonte-fantasia);
+    color: var(--ouro-velho);
+    font-size: 0.85rem;
+    padding: 12px;
+    border-bottom: 2px solid var(--vermelho-tormenta);
+    letter-spacing: 0.5px;
 }
 
-#tabela-pericias td {
-    padding: 5px 8px;
-    border-bottom: 1px solid #ddd;
-    font-size: 0.95rem;
+.pericia-linha {
+    border-bottom: 1px solid #1f1f26;
+    transition: background-color 0.15s;
+}
+
+.pericia-linha:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.01);
 }
 
 .pericia-linha:hover {
-    background-color: #f1eded;
+    background-color: rgba(156, 28, 28, 0.08);
 }
 
+#tabela-pericias td {
+    padding: 6px 12px;
+    vertical-align: middle;
+}
+
+#tabela-pericias td:first-child {
+    text-align: center;
+    width: 50px;
+}
+
+/* Tags de atributo ao lado do nome (Ex: (Des)) */
 .attr-tag {
-    color: #7f8c8d;
+    color: var(--texto-mutado);
     font-size: 0.8rem;
     font-weight: bold;
 }
 
 .input-pericia-nome {
-    border: none;
-    border-bottom: 1px solid var(--preto-borda);
-    padding: 2px;
-    font-size: 0.9rem;
-    width: 120px;
-    background: transparent;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed #4a4a57 !important;
+    border-radius: 0 !important;
+    padding: 2px 4px !important;
+    width: auto !important;
+    max-width: 120px;
+    color: var(--ouro-brilho);
+    font-style: italic;
+}
+.input-pericia-nome:focus {
+    border-bottom-color: var(--vermelho-brilho) !important;
+    box-shadow: none !important;
 }
 
+/*Inputs numéricos menores na tabela para poupar espaço fluído */
 #tabela-pericias input[type="number"] {
-    width: 55px;
-    text-align: center;
-    padding: 4px;
-    font-size: 0.9rem;
-}
-
-#tabela-pericias input[readonly] {
-    background-color: #f9f9f9;
-    font-weight: bold;
-    color: var(--vermelho-tormenta);
-    border-color: var(--vermelho-tormenta);
+    padding: 5px;
+    max-width: 70px;
+    margin: 0 auto;
+    display: block;
 }
 
 /* ==========================================================================
-   🎒 INVENTÁRIO, GRIMÓRIO E TEXTAREAS
+   SEÇÃO 5, 6, 7 & 8: INVENTÁRIO, PODERES, GRIMÓRIO E ANOTAÇÕES
    ========================================================================== */
-
 #painel-carga {
-    background: #fff5f5;
-    border: 1px solid var(--vermelho-tormenta);
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-size: 1rem;
+    background-color: #121215;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--vermelho-profundo);
+    font-size: 0.9rem;
+    color: var(--texto-mutado);
 }
+#carga-atual { color: var(--vermelho-brilho); font-weight: bold; }
+#carga-maxima { color: var(--texto-principal); }
 
-#painel-carga span {
-    font-weight: bold;
-    color: var(--vermelho-tormenta);
-}
-
-/* Listas Dinâmicas */
 #lista-inventario, #lista-magias {
     list-style: none;
-    padding: 0;
-    margin: 0 0 15px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    padding: 15px;
 }
 
-.item-inventario-linha, .magia-dados-linha {
+.item-inventario-linha, .magia-item {
+    background-color: rgba(0,0,0,0.15);
+    border: 1px solid #25252e;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
-.item-nome, .magia-nome { flex: 2; min-width: 150px; }
-.item-qtd, .item-espaco, .magia-custo { width: 70px; text-align: center; }
-.magia-execucao, .magia-alcance, .magia-duracao, .magia-resistencia { flex: 1; min-width: 100px; }
+.item-nome { flex: 3; min-width: 150px; }
+.item-qtd { flex: 1; min-width: 60px; text-align: center; }
+.item-espaco { flex: 1; min-width: 60px; text-align: center; }
 
-.magia-item {
-    background: #fff;
-    border: 1px solid var(--preto-borda);
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
-}
-
-.magia-descricao {
-    width: 100%;
-    resize: vertical;
-}
-
-/* Botões Operacionais das Listas */
-#btn-adicionar-item, #btn-adicionar-magia {
-    background: #fff;
-    border: 2px dashed var(--vermelho-tormenta);
-    color: var(--vermelho-tormenta);
-    padding: 10px;
-    width: 100%;
-    font-family: var(--fonte-titulos);
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: background 0.2s;
-}
-
-#btn-adicionar-item:hover, #btn-adicionar-magia:hover {
-    background: #fff0f0;
-}
-
+/* Botões de exclusão/remover */
 .btn-remover-item, .btn-remover-magia {
-    background: #7f8c8d;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
+    background: linear-gradient(to bottom, #3a1616, #210c0c);
+    border: 1px solid #732222;
+    color: #ff9999;
+    padding: 6px 12px;
     font-size: 0.8rem;
-    text-transform: uppercase;
 }
-
 .btn-remover-item:hover, .btn-remover-magia:hover {
-    background: #c0392b;
+    background: #9c1c1c;
+    border-color: #ff5252;
+    color: #fff;
+    box-shadow: 0 0 6px rgba(255,82,82,0.4);
 }
 
-/* Campos de Texto Longo (Poderes / Anotações) */
-textarea {
-    width: 100%;
-    min-height: 120px;
-    box-sizing: border-box;
+/* Estrutura interna do bloco de magias */
+.magia-item {
+    display: block; /* Empilha os blocos internos de dados */
+    border-left: 3px solid var(--vermelho-tormenta);
+}
+
+.magia-dados-linha {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.magia-nome { flex: 2; min-width: 180px; font-weight: bold; color: var(--ouro-brilho); }
+.magia-custo { flex: 0.5; min-width: 60px; text-align: center; }
+.magia-execucao, .magia-alcance, .magia-duracao, .magia-resistencia { flex: 1; min-width: 110px; }
+.magia-descricao { margin-top: 5px; margin-bottom: 8px; resize: vertical; }
+
+/* Botões de inserção ao final das listas */
+#btn-adicionar-item, #btn-adicionar-magia {
+    margin: 0 15px 15px 15px;
+    font-size: 0.85rem;
+    border-color: var(--ouro-velho);
+}
+
+/* Área de Texto de Habilidades e Anotações */
+textarea#poderes, textarea#anotacoes {
+    padding: 15px;
+    line-height: 1.6;
+    border-radius: 0 0 6px 6px;
+    min-height: 150px;
     resize: vertical;
-    line-height: 1.5;
+    background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+    background-size: 100% 24px; /* Linhas sutis tipo caderno antigo */
 }
 
-/* Ajustes de Responsividade para Telas Menores */
-@media (max-width: 600px) {
-    #painel-controle {
-        flex-direction: column;
-        text-align: center;
+/* ==========================================================================
+   REGRAS DE RESPONSIVIDADE (MOBILE POLISH)
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 10px 5px;
     }
-    .item-inventario-linha, .magia-dados-linha {
-        flex-direction: column;
+    
+    #painel-controle h1 {
+        font-size: 1.4rem;
     }
-    .item-qtd, .item-espaco, .magia-custo {
+    
+    .grid-dados {
+        grid-template-columns: 1fr 1fr;
+        padding: 10px;
+    }
+    
+    .grid-atributos {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .sub-grid-status {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    #tabela-pericias thead {
+        display: none; /* Oculta cabeçalho em telas minúsculas para visualização em lista */
+    }
+
+    .item-inventario-linha {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .item-nome, .item-qtd, .item-espaco {
         width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-dados {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-atributos {
+        grid-template-columns: 1fr 1fr;
     }
 }

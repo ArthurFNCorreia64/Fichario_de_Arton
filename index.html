@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="pt-BR">
+	<!-- Página da ficha digital de Tormenta 20.
+     O HTML define a estrutura da interface e os campos de entrada usados
+     pelo JavaScript para calcular valores e salvar/carregar o personagem. -->
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ficha Digital - Tormenta 20 JdoA</title>
+		<link rel="stylesheet" href="public/style.css" />
+	</head>
+	<body>
+		<!-- Cabeçalho principal com controles de backup -->
+		<header id="painel-controle">
+			<h1>Ficha de Personagem: Tormenta 20 (Jogo do Ano)</h1>
+			<div class="botoes-backup">
+				<!-- Botão que aciona a exportação para JSON -->
+				<button type="button" id="btn-salvar">Exportar Ficha (Backup)</button>
+				<!-- Label que abre o seletor de arquivos de backup -->
+				<label id="label-carregar" for="input-carregar"
+					>Importar Ficha (Carregar Backup)</label
+				>
+				<!-- Input de arquivo escondido que só é mostrado pelo label -->
+				<input
+					type="file"
+					id="input-carregar"
+					accept=".json"
+					style="display: none"
+				/>
+			</div>
+		</header>
+
+		<!-- Formulário que contém todos os campos da ficha.
+         O JavaScript usa este formulário para detectar mudanças e recalcular valores. -->
+		<form id="ficha-form">
+			<!-- Seção de dados básicos do personagem -->
+			<details class="bloco-ficha" id="secao-cabecalho" open>
+				<summary class="cabecalho-sanfona"><h2>Dados Básicos</h2></summary>
+				<div class="grid-dados">
+					<div class="campo">
+						<label for="nome">Nome do Personagem:</label
+						><input type="text" id="nome" name="nome" />
+					</div>
+					<div class="campo">
+						<label for="jogador">Jogador:</label
+						><input type="text" id="jogador" name="jogador" />
+					</div>
+					<div class="campo">
+						<label for="raca">Raça:</label
+						><input type="text" id="raca" name="raca" />
+					</div>
+					<div class="campo">
+						<label for="classe">Classe:</label
+						><input type="text" id="classe" name="classe" />
+					</div>
+					<div class="campo campo-destaque">
+						<label for="nivel">NÍVEL:</label
+						><input
+							type="number"
+							id="nivel"
+							name="nivel"
+							value="1"
+							min="1"
+							max="20"
+						/>
+					</div>
+					<div class="campo">
+						<label for="divindade">Divindade:</label
+						><input type="text" id="divindade" name="divindade" />
+					</div>
+					<div class="campo">
+						<label for="origem">Origem:</label
+						><input type="text" id="origem" name="origem" />
+					</div>
+					<div class="campo">
+						<label for="tamanho">Tamanho:</label>
+						<select id="tamanho" name="tamanho">
+							<option value="minusculo">Minúsculo</option>
+							<option value="pequeno">Pequeno</option>
+							<option value="medio" selected>Médio</option>
+							<option value="grande">Grande</option>
+							<option value="enorme">Enorme</option>
+							<option value="colossal">Colossal</option>
+						</select>
+					</div>
+				</div>
+			</details>
+
+			<!-- Seção onde o jogador insere os atributos brutos.
+             Esses valores vão direto para os cálculos de PV, PM, defesa e perícias. -->
+			<details class="bloco-ficha" id="secao-atributos" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Atributos (Modificadores Diretos)</h2>
+				</summary>
+				<div class="grid-atributos">
+					<div class="campo-atributo">
+						<label for="forca">FORÇA</label
+						><input type="number" id="forca" value="0" />
+					</div>
+					<div class="campo-atributo">
+						<label for="destreza">DESTREZA</label
+						><input type="number" id="destreza" value="0" />
+					</div>
+					<div class="campo-atributo">
+						<label for="constituicao">CONSTITUIÇÃO</label
+						><input type="number" id="constituicao" value="0" />
+					</div>
+					<div class="campo-atributo">
+						<label for="inteligencia">INTELIGÊNCIA</label
+						><input type="number" id="inteligencia" value="0" />
+					</div>
+					<div class="campo-atributo">
+						<label for="sabedoria">SABEDORIA</label
+						><input type="number" id="sabedoria" value="0" />
+					</div>
+					<div class="campo-atributo">
+						<label for="carisma">CARISMA</label
+						><input type="number" id="carisma" value="0" />
+					</div>
+				</div>
+			</details>
+
+			<!-- Seção de status que exibe pontos, defesa e parâmetros de conjuração. -->
+			<details class="bloco-ficha" id="secao-status" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Status, Defesa e Conjuração</h2>
+				</summary>
+				<div class="sub-grid-status">
+					<!-- Bloco de configuração de classe que define os valores iniciais de PV/PM -->
+					<div class="sub-bloco" id="configurador-vida-mana">
+							<h3>Configurações da Classe (PV/PM Iniciais)</h3>
+						<div class="conteudo-sub-bloco">
+							<div class="campo">
+								<label for="pv-inicial">PV Inicial da Classe:</label
+								><input type="number" id="pv-inicial" value="0" />
+							</div>
+							<div class="campo">
+								<label for="pm-inicial">PM Inicial da Classe:</label
+								><input type="number" id="pm-inicial" value="0" />
+							</div>
+							<div class="campo" id="container-pv-nivel">
+								<label for="pv-por-nivel">PV por Nível:</label
+								><input type="number" id="pv-por-nivel" value="0" />
+							</div>
+							<div class="campo" id="container-pm-nivel">
+								<label for="pm-por-nivel">PM por Nível:</label
+								><input type="number" id="pm-por-nivel" value="0" />
+							</div>
+							<div class="campo">
+								<label for="pv-atributo-chave">Atributo-Chave PV:</label>
+								<select id="pv-atributo-chave">
+									<option value="forca">Força</option>
+									<option value="destreza">Destreza</option>
+									<option value="constituicao" selected>Constituição</option>
+									<option value="inteligencia">Inteligência</option>
+									<option value="sabedoria">Sabedoria</option>
+									<option value="carisma">Carisma</option>
+								</select>
+							</div>
+							<div class="campo">
+								<label for="pm-atributo-chave">Atributo-Chave PM:</label>
+								<select id="pm-atributo-chave">
+									<option value="nenhum" selected>Nenhum</option>
+									<option value="forca">Força</option>
+									<option value="destreza">Destreza</option>
+									<option value="constituicao">Constituição</option>
+									<option value="inteligencia">Inteligência</option>
+									<option value="sabedoria">Sabedoria</option>
+									<option value="carisma">Carisma</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<!-- Bloco que mostra os pontos atuais e os totais de PV e PM.
+                     O valor máximo é calculado automaticamente pelo JavaScript. -->
+					<div class="sub-bloco">
+						<h3>Pontos Atuais / Totais</h3>
+						<div class="campo-duplo">
+							<label>PV:</label><input type="number" id="pv-atual" /> /
+							<input type="number" id="pv-max" readonly />
+						</div>
+						<div class="campo-duplo">
+							<label>PV Temp:</label
+							><input type="number" id="pv-temporario" value="0" />
+						</div>
+						<div class="campo-duplo">
+							<label>PM:</label><input type="number" id="pm-atual" /> /
+							<input type="number" id="pm-max" readonly />
+						</div>
+						<div class="campo-duplo">
+							<label>PM Temp:</label
+							><input type="number" id="pm-temporario" value="0" />
+						</div>
+                    </div>
+                    
+                    <div class="sub-bloco">
+                        <h3>Defesa e Armadura</h3>
+						<div class="campo-duplo">
+							<label>Defesa Total:</label
+							><input type="number" id="defesa-total" readonly value="10" />
+						</div>
+						<div class="campo">
+							<label for="bonus-armadura">Bônus de Armadura:</label
+							><input type="number" id="bonus-armadura" value="0" />
+						</div>
+						<div class="campo">
+							<label for="bonus-escudo">Bônus de Escudo:</label
+							><input type="number" id="bonus-escudo" value="0" />
+						</div>
+						<div class="campo">
+							<label for="outros-defesa">Outros Modificadores:</label
+							><input type="number" id="outros-defesa" value="0" />
+						</div>
+						<div class="campo-checkbox">
+							<input type="checkbox" id="ignorar-destreza" /><label
+								for="ignorar-destreza"
+								>Armadura Pesada</label
+							>
+						</div>
+						<div class="campo">
+							<label for="penalidade-armadura">Penalidade de Armadura:</label
+							><input
+								type="number"
+								id="penalidade-armadura"
+								value="0"
+								min="0"
+							/>
+						</div>
+					</div>
+
+					<!-- Bloco que define a Classe de Dificuldade usada em magias e testes especiais. -->
+					<div class="sub-bloco">
+						<h3>Classe de Dificuldade (CD)</h3>
+						<div class="campo">
+							<label>CD Total:</label
+							><input type="number" id="cd-total" readonly value="10" />
+						</div>
+						<div class="campo">
+							<label for="cd-atributo-chave">Atributo-Chave:</label>
+							<select id="cd-atributo-chave">
+								<option value="inteligencia">Inteligência</option>
+								<option value="sabedoria">Sabedoria</option>
+								<option value="carisma">Carisma</option>
+								<option value="nenhum">Nenhum</option>
+							</select>
+						</div>
+						<div class="campo">
+							<label for="cd-outros">Outros Bônus:</label
+							><input type="number" id="cd-outros" value="0" />
+						</div>
+					</div>
+				</div>
+			</details>
+
+			<!-- Seção de perícias: cada linha calcula automaticamente o total com base no atributo e bônus de treinamento. -->
+			<details class="bloco-ficha" id="secao-pericias" open>
+				<summary class="cabecalho-sanfona"><h2>Perícias</h2></summary>
+				<table id="tabela-pericias">
+					<thead>
+						<tr>
+							<th>Treinada?</th>
+							<th>Nome da Perícia (Atributo)</th>
+							<th>Total Calculado</th>
+							<th>Outros Bônus</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="true"
+						>
+							<td><input type="checkbox" id="p-acrobacia-treinada" /></td>
+							<td>Acrobacia <span class="attr-tag">(Des)</span> *</td>
+							<td><input type="number" id="p-acrobacia-total" readonly /></td>
+							<td><input type="number" id="p-acrobacia-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-adestramento-treinada" /></td>
+							<td>Adestramento <span class="attr-tag">(Car)</span></td>
+							<td>
+								<input type="number" id="p-adestramento-total" readonly />
+							</td>
+							<td>
+								<input type="number" id="p-adestramento-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="forca"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-atletismo-treinada" /></td>
+							<td>Atletismo <span class="attr-tag">(For)</span></td>
+							<td><input type="number" id="p-atletismo-total" readonly /></td>
+							<td><input type="number" id="p-atletismo-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-atuacao-treinada" /></td>
+							<td>Atuação <span class="attr-tag">(Car)</span></td>
+							<td><input type="number" id="p-atuacao-total" readonly /></td>
+							<td><input type="number" id="p-atuacao-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-cavalgar-treinada" /></td>
+							<td>Cavalgar <span class="attr-tag">(Des)</span></td>
+							<td><input type="number" id="p-cavalgar-total" readonly /></td>
+							<td><input type="number" id="p-cavalgar-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-conhecimento-treinada" /></td>
+							<td>Conhecimento <span class="attr-tag">(Int)</span></td>
+							<td>
+								<input type="number" id="p-conhecimento-total" readonly />
+							</td>
+							<td>
+								<input type="number" id="p-conhecimento-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-cura-treinada" /></td>
+							<td>Cura <span class="attr-tag">(Sab)</span></td>
+							<td><input type="number" id="p-cura-total" readonly /></td>
+							<td><input type="number" id="p-cura-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-diplomacia-treinada" /></td>
+							<td>Diplomacia <span class="attr-tag">(Car)</span></td>
+							<td><input type="number" id="p-diplomacia-total" readonly /></td>
+							<td>
+								<input type="number" id="p-diplomacia-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-enganacao-treinada" /></td>
+							<td>Enganação <span class="attr-tag">(Car)</span></td>
+							<td><input type="number" id="p-enganacao-total" readonly /></td>
+							<td><input type="number" id="p-enganacao-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="constituicao"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-fortitude-treinada" /></td>
+							<td>Fortitude <span class="attr-tag">(Con)</span></td>
+							<td><input type="number" id="p-fortitude-total" readonly /></td>
+							<td><input type="number" id="p-fortitude-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="true"
+						>
+							<td><input type="checkbox" id="p-furtividade-treinada" /></td>
+							<td>Furtividade <span class="attr-tag">(Des)</span> *</td>
+							<td><input type="number" id="p-furtividade-total" readonly /></td>
+							<td>
+								<input type="number" id="p-furtividade-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-guerra-treinada" /></td>
+							<td>Guerra <span class="attr-tag">(Int)</span></td>
+							<td><input type="number" id="p-guerra-total" readonly /></td>
+							<td><input type="number" id="p-guerra-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-iniciativa-treinada" /></td>
+							<td>Iniciativa <span class="attr-tag">(Des)</span></td>
+							<td><input type="number" id="p-iniciativa-total" readonly /></td>
+							<td>
+								<input type="number" id="p-iniciativa-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-intimidacao-treinada" /></td>
+							<td>Intimidação <span class="attr-tag">(Car)</span></td>
+							<td><input type="number" id="p-intimidacao-total" readonly /></td>
+							<td>
+								<input type="number" id="p-intimidacao-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-intuicao-treinada" /></td>
+							<td>Intuição <span class="attr-tag">(Sab)</span></td>
+							<td><input type="number" id="p-intuicao-total" readonly /></td>
+							<td><input type="number" id="p-intuicao-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-investigacao-treinada" /></td>
+							<td>Investigação <span class="attr-tag">(Int)</span></td>
+							<td>
+								<input type="number" id="p-investigacao-total" readonly />
+							</td>
+							<td>
+								<input type="number" id="p-investigacao-outros" value="0" />
+							</td>
+						</tr>
+                        <tr
+							class="pericia-linha"
+							data-atributo="carisma"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-jogatina-treinada" /></td>
+							<td>Jogatina <span class="attr-tag">(Car)</span></td>
+							<td>
+								<input type="number" id="p-jogatina-total" readonly />
+							</td>
+							<td>
+								<input type="number" id="p-jogatina-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="true"
+						>
+							<td><input type="checkbox" id="p-ladinagem-treinada" /></td>
+							<td>Ladinagem <span class="attr-tag">(Des)</span> *</td>
+							<td><input type="number" id="p-ladinagem-total" readonly /></td>
+							<td><input type="number" id="p-ladinagem-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="forca"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-luta-treinada" /></td>
+							<td>Luta <span class="attr-tag">(For)</span></td>
+							<td><input type="number" id="p-luta-total" readonly /></td>
+							<td><input type="number" id="p-luta-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-misticismo-treinada" /></td>
+							<td>Misticismo <span class="attr-tag">(Int)</span></td>
+							<td><input type="number" id="p-misticismo-total" readonly /></td>
+							<td>
+								<input type="number" id="p-misticismo-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-nobreza-treinada" /></td>
+							<td>Nobreza <span class="attr-tag">(Int)</span></td>
+							<td><input type="number" id="p-nobreza-total" readonly /></td>
+							<td><input type="number" id="p-nobreza-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-oficio1-treinada" /></td>
+							<td>
+								Ofício 1:
+								<input
+									type="text"
+									id="p-oficio1-nome"
+									placeholder="Ex: Alquimia"
+									class="input-pericia-nome"
+								/>
+								<span class="attr-tag">(Int)</span>
+							</td>
+							<td><input type="number" id="p-oficio1-total" readonly /></td>
+							<td><input type="number" id="p-oficio1-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="inteligencia"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-oficio2-treinada" /></td>
+							<td>
+								Ofício 2:
+								<input
+									type="text"
+									id="p-oficio2-nome"
+									placeholder="Ex: Forja"
+									class="input-pericia-nome"
+								/>
+								<span class="attr-tag">(Int)</span>
+							</td>
+							<td><input type="number" id="p-oficio2-total" readonly /></td>
+							<td><input type="number" id="p-oficio2-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-percepcao-treinada" /></td>
+							<td>Percepção <span class="attr-tag">(Sab)</span></td>
+							<td><input type="number" id="p-percepcao-total" readonly /></td>
+							<td><input type="number" id="p-percepcao-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-pilotagem-treinada" /></td>
+							<td>Pilotagem <span class="attr-tag">(Des)</span></td>
+							<td><input type="number" id="p-pilotagem-total" readonly /></td>
+							<td><input type="number" id="p-pilotagem-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-pontaria-treinada" /></td>
+							<td>Pontaria <span class="attr-tag">(Des)</span></td>
+							<td><input type="number" id="p-pontaria-total" readonly /></td>
+							<td><input type="number" id="p-pontaria-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="destreza"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-reflexos-treinada" /></td>
+							<td>Reflexos <span class="attr-tag">(Des)</span></td>
+							<td><input type="number" id="p-reflexos-total" readonly /></td>
+							<td><input type="number" id="p-reflexos-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-religiao-treinada" /></td>
+							<td>Religião <span class="attr-tag">(Sab)</span></td>
+							<td><input type="number" id="p-religiao-total" readonly /></td>
+							<td><input type="number" id="p-religiao-outros" value="0" /></td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-sobrevivencia-treinada" /></td>
+							<td>Sobrevivência <span class="attr-tag">(Sab)</span></td>
+							<td>
+								<input type="number" id="p-sobrevivencia-total" readonly />
+							</td>
+							<td>
+								<input type="number" id="p-sobrevivencia-outros" value="0" />
+							</td>
+						</tr>
+						<tr
+							class="pericia-linha"
+							data-atributo="sabedoria"
+							data-penalidade="false"
+						>
+							<td><input type="checkbox" id="p-vontade-treinada" /></td>
+							<td>Vontade <span class="attr-tag">(Sab)</span></td>
+							<td><input type="number" id="p-vontade-total" readonly /></td>
+							<td><input type="number" id="p-vontade-outros" value="0" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</details>
+
+			<!-- Seção de inventário: o jogador controla itens, quantidade e espaços ocupados. -->
+			<details class="bloco-ficha" id="secao-inventario" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Inventário e Equipamentos</h2>
+				</summary>
+				<div id="painel-carga">
+					<strong>Carga Atual:</strong> <span id="carga-atual">0</span> /
+					<span id="carga-maxima">10</span> Espaços
+				</div>
+				<ul id="lista-inventario">
+					<li class="item-inventario-linha">
+						<input type="text" class="item-nome" placeholder="Nome do Item" />
+						<input type="number" class="item-qtd" value="1" min="1" />
+						<input type="number" class="item-espaco" value="1" min="0" />
+						<button
+							type="button"
+							class="btn-remover-item"
+							onclick="this.parentElement.remove()"
+						>
+							Remover
+						</button>
+					</li>
+				</ul>
+				<button type="button" id="btn-adicionar-item">
+					Adicionar Novo Item
+				</button>
+			</details>
+
+			<!-- Seção de poderes e habilidades especiais, onde o jogador registra recursos importantes da classe. -->
+			<details class="bloco-ficha" id="secao-poderes" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Poderes Gerais, de Classe e Origem</h2>
+				</summary>
+				<textarea
+					id="poderes"
+					rows="6"
+					placeholder="Ataque Poderoso, Estilo de Espada..."
+				></textarea>
+			</details>
+
+			<!-- Seção de magias: cada magia pode ser adicionada, removida e salva junto com a ficha. -->
+			<details class="bloco-ficha" id="secao-magias" open>
+				<summary class="cabecalho-sanfona"><h2>Grimório de Magias</h2></summary>
+				<ul id="lista-magias">
+					<li class="magia-item">
+						<div class="magia-dados-linha">
+							<input
+								type="text"
+								class="magia-nome"
+								placeholder="Nome da Magia"
+							/>
+							<input
+								type="number"
+								class="magia-custo"
+								placeholder="PM"
+								min="0"
+							/>
+							<input
+								type="text"
+								class="magia-execucao"
+								placeholder="Execução"
+							/>
+							<input type="text" class="magia-alcance" placeholder="Alcance" />
+						</div>
+						<div class="magia-dados-linha">
+							<input type="text" class="magia-duracao" placeholder="Duração" />
+							<input
+								type="text"
+								class="magia-resistencia"
+								placeholder="Resistência"
+							/>
+						</div>
+						<textarea
+							class="magia-descricao"
+							rows="2"
+							placeholder="Efeito..."
+						></textarea>
+						<button
+							type="button"
+							class="btn-remover-magia"
+							onclick="this.parentElement.remove()"
+						>
+							Remover Magia
+						</button>
+					</li>
+				</ul>
+				<button type="button" id="btn-adicionar-magia">
+					Adicionar Nova Magia
+				</button>
+			</details>
+
+			<!-- Seção onde o jogador pode anotar informações de campanha, lembranças e objetivos. -->
+			<details class="bloco-ficha" id="secao-anotacoes" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Anotações de Campanha</h2>
+				</summary>
+				<textarea
+					id="anotacoes"
+					rows="6"
+					placeholder="Anotações gerais..."
+				></textarea>
+			</details>
+		</form>
+
+		<!-- O script abaixo adiciona comportamento dinâmico ao formulário:
+         - atualiza cálculos quando os valores mudam
+         - adiciona/remova linhas de itens e magias
+         - salva e carrega backups JSON -->
+		<script src="public/script.js"></script>
+	</body>
+</html>
