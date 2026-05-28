@@ -155,9 +155,12 @@ function calcularTudo() {
 					outrosBonus -
 					penalidadeAplicada;
 			} else {
+				if (linha.getAttribute("data-apenas-treinada") === "true") {
+					totalPericia = 0; // Perícia sem treino não tem valor se for "apenas treinada"
+				} else {
 				totalPericia =
 					modAtributo + metadeNivel + outrosBonus - penalidadeAplicada;
-			}
+			}}
 			inputTotal.value = totalPericia;
 		}
 	});
