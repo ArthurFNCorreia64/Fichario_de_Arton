@@ -1,24 +1,23 @@
 /**
  * 🧙‍♂️ SCRIPT LÓGICO - FICHA DIGITAL TORMENTA 20 (JdoA)
  *
- * Este arquivo controla toda a lógica da ficha, incluindo cálculos automáticos,
- * adição de itens e magias, e a leitura/gravação de backups em JSON.
+ * Este arquivo controla o comportamento da ficha, conectando o HTML com o
+ * JavaScript, atualizando cálculos automáticos e salvando/carregando dados.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-	// Faz a página calcular todos os valores assim que o HTML estiver carregado.
+	// Executa o script principal quando o documento HTML estiver pronto.
 	calcularTudo();
 
-	// Sempre que qualquer campo do formulário mudar, recalcula os totais.
+	// Pega o formulário e observa mudanças em qualquer campo.
 	const formulario = document.getElementById("ficha-form");
 	formulario.addEventListener("input", calcularTudo);
 	formulario.addEventListener("change", calcularTudo);
 
-	// Inicializa os menus suspensos de atributo para cada perícia.
+	// Cria os controles de atributo para cada perícia.
 	inicializarAtributosDasPericias();
 
-	// Liga os botões da interface às funções que adicionam itens, adicionam magias,
-	// salvam o backup e carregam o backup.
+	// Conecta os botões da interface às funções de ação.
 	document
 		.getElementById("btn-adicionar-magia")
 		.addEventListener("click", adicionarMagiaLinha);
@@ -39,13 +38,17 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * Recalcula todos os valores automáticos da ficha.
  *
- * Esta função atualiza PV, PM, defesa, CD, perícias e carga do inventário.
- * Ela é chamada sempre que algum campo do formulário mudar.
+ * Essa função lê campos do HTML, faz as contas e atualiza o que aparece na tela.
  */
 function calcularTudo() {
-	// Lê o nível atual. Se não houver valor válido, usa 1.
+	// Lê o nível atual e usa 1 como valor padrão se o campo estiver vazio.
 	const nivel = parseInt(document.getElementById("nivel").value) || 1;
-	// Metade do nível é usada em muitos cálculos de Tormenta.
+	// Observações sintáticas (usadas abaixo):
+	// - parseInt(...): converte string para inteiro.
+	// - parseFloat(...): converte string para número (decimais).
+	// - Math.floor(...): arredonda para baixo.
+	// - '||' fornece valor padrão quando o lado esquerdo for falsy.
+	// - Operador ternário: condição ? valorSeVerdadeiro : valorSeFalso.
 	const metadeNivel = Math.floor(nivel / 2);
 
 	// --- LÓGICA DE CONVERSÃO DE DESLOCAMENTO ---
@@ -92,20 +95,19 @@ function calcularTudo() {
 	const modPVAtributo =
 		pvAtributoChave && mapaAtributos[pvAtributoChave]
 			? mapaAtributos[pvAtributoChave]
-			: 0;
-	const modPMAtributo =
+			: 0; // obtém modificador do atributo chave (ou 0)
+	let modPMAtributo =
 		pmAtributoChave && mapaAtributos[pmAtributoChave]
 			? mapaAtributos[pmAtributoChave]
 			: 0;
-	if (modPMAtributo < 0) modPMAtributo = 0;
+	if (modPMAtributo < 0) modPMAtributo = 0; // Garante que não tenha mod negativo.
 
-	const pvNivel = (pvPorNivel + modPVAtributo) * (nivel - 1);
-	if (pvNivel < 0) pvNivel = 1;
+	let pvNivel = (pvPorNivel + modPVAtributo) * (nivel - 1);
+	if (pvNivel < 0) pvNivel = 1; // Não deixa PV por nível ficar negativo.
 
 	const pmNivel = pmPorNivel * (nivel - 1);
 
 	const pvMaximo = pvInicial + modPVAtributo + pvNivel;
-
 	const pmMaximo = pmInicial + modPMAtributo + pmNivel;
 
 	document.getElementById("pv-max").value = pvMaximo;
@@ -121,14 +123,13 @@ function calcularTudo() {
 	const penalidadeArmadura =
 		parseInt(document.getElementById("penalidade-armadura").value) || 0;
 
-	// Se a armadura exige ignorar destreza, não usamos o modificador de destreza.
+	// Se a armadura exige ignorar destreza, o modificador de destreza vira 0.
 	const desNaDefesa = ignorarDestreza ? 0 : destreza;
-	// Definição básica de defesa: 10 + destreza + armadura + escudo + outros bônus.
 	const defesaTotal =
 		10 + desNaDefesa + bonusArmadura + bonusEscudo + outrosDefesa;
 	document.getElementById("defesa-total").value = defesaTotal;
 
-	// Define a CD base com o atributo chave escolhido pelo jogador.
+	// CD = 10 + metade do nível + atributo chave + outros bônus.
 	const cdAtributoChave = document.getElementById("cd-atributo-chave").value;
 	const cdOutros = parseInt(document.getElementById("cd-outros").value) || 0;
 	const modCDAtributo = mapaAtributos[cdAtributoChave] || 0;
@@ -156,6 +157,7 @@ function calcularTudo() {
 
 			let totalPericia = 0;
 			if (checkboxTreinada.checked) {
+				// Se a perícia for treinada, soma o bônus de treino.
 				totalPericia =
 					modAtributo +
 					metadeNivel +
@@ -164,8 +166,10 @@ function calcularTudo() {
 					penalidadeAplicada;
 			} else {
 				if (linha.getAttribute("data-apenas-treinada") === "true") {
-					totalPericia = 0; // Perícia sem treino não tem valor se for "apenas treinada"
+					// Perícias que só funcionam se treinadas não têm valor sem treino.
+					totalPericia = 0;
 				} else {
+					// Perícias não treinadas usam apenas atributo + metade do nível.
 					totalPericia =
 						modAtributo + metadeNivel + outrosBonus - penalidadeAplicada;
 				}
@@ -174,7 +178,10 @@ function calcularTudo() {
 		}
 	});
 
-	const cargaMaxima = 10 + forca * 2;
+	let bonusCarga = forca * 2; // bônus de carga derivado da Força
+	if (forca < 0) bonusCarga = -1; // proteção para valores inválidos
+
+	const cargaMaxima = 10 + bonusCarga; // capacidade máxima: base 10 + bônus de força
 	document.getElementById("carga-maxima").innerText = cargaMaxima;
 
 	let cargaAtualAcumulada = 0;
@@ -335,6 +342,7 @@ function inicializarAtributosDasPericias() {
  * Gera um backup JSON com todos os dados da ficha e inicia o download.
  */
 function exportarFichaJSON() {
+	// Monta um objeto com todas as informações da ficha.
 	const fichaDados = {
 		dadosBasicos: {
 			nome: document.getElementById("nome").value,
@@ -433,7 +441,7 @@ function exportarFichaJSON() {
 			});
 		});
 
-	// Converte o objeto em texto JSON e baixa como arquivo.
+	// Converte o objeto em texto JSON, codifica e cria um link de download.
 	const dataStr =
 		"data:text/json;charset=utf-8," +
 		encodeURIComponent(JSON.stringify(fichaDados, null, 2));
@@ -454,14 +462,17 @@ function exportarFichaJSON() {
  * Se o arquivo não puder ser lido, exibe uma mensagem de erro.
  */
 function importarFichaJSON(evento) {
+	// Recebe o arquivo selecionado no input tipo file.
 	const arquivo = evento.target.files[0];
 	if (!arquivo) return;
 
 	const leitor = new FileReader();
 	leitor.onload = function (e) {
 		try {
+			// JSON.parse transforma o texto JSON em objeto JavaScript.
 			const dados = JSON.parse(e.target.result);
 
+			// Percorre as chaves do objeto e preenche os campos do formulário.
 			for (let chave in dados.dadosBasicos) {
 				const el = document.getElementById(chave);
 				if (el) el.value = dados.dadosBasicos[chave];
