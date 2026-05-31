@@ -83,6 +83,23 @@
 							<option value="colossal">Colossal</option>
 						</select>
 					</div>
+
+					<div class="campo">
+						<label for="deslocamento">Deslocamento:</label>
+						<div class="campo-deslocamento-container">
+							<input
+								type="number"
+								id="deslocamento"
+								name="deslocamento"
+								value="9"
+								min="0"
+								step="1.5"
+							/>
+							<span class="texto-tiles">
+								Metros = <strong id="deslocamento-tiles">6</strong> Tiles
+							</span>
+						</div>
+					</div>
 				</div>
 			</details>
 
@@ -128,7 +145,7 @@
 				<div class="sub-grid-status">
 					<!-- Bloco de configuração de classe que define os valores iniciais de PV/PM -->
 					<div class="sub-bloco" id="configurador-vida-mana">
-							<h3>Configurações da Classe (PV/PM Iniciais)</h3>
+						<h3>Configurações da Classe (PV/PM Iniciais)</h3>
 						<div class="conteudo-sub-bloco">
 							<div class="campo">
 								<label for="pv-inicial">PV Inicial da Classe:</label
@@ -191,10 +208,10 @@
 							<label>PM Temp:</label
 							><input type="number" id="pm-temporario" value="0" />
 						</div>
-                    </div>
-                    
-                    <div class="sub-bloco">
-                        <h3>Defesa e Armadura</h3>
+					</div>
+
+					<div class="sub-bloco">
+						<h3>Defesa e Armadura</h3>
 						<div class="campo-duplo">
 							<label>Defesa Total:</label
 							><input type="number" id="defesa-total" readonly value="10" />
@@ -250,6 +267,113 @@
 						</div>
 					</div>
 				</div>
+			</details>
+
+			<details class="bloco-ficha" id="secao-ataques" open>
+				<summary class="cabecalho-sanfona"><h2>Ataques e Armas</h2></summary>
+				<div>
+					<div class="tabela-responsiva">
+						<table id="tabela-ataques">
+							<thead>
+								<tr>
+									<th>Arma / Ataque</th>
+									<th>Perícia Base</th>
+									<th>Bônus Extra</th>
+									<th>Teste de Ataque</th>
+									<th>Dano</th>
+									<th>Crítico</th>
+									<th>Tipo</th>
+									<th>Alcance</th>
+									<th>Remover</th>
+								</tr>
+							</thead>
+							<tbody id="lista-ataques">
+								<tr class="ataque-linha">
+									<td>
+										<input
+											type="text"
+											class="ataque-nome"
+											placeholder="Ex: Espada Longa"
+										/>
+									</td>
+									<td>
+										<select class="ataque-pericia">
+											<option value="luta" selected>Luta</option>
+											<option value="pontaria">Pontaria</option>
+											<option value="nenhum">Nenhum(Apenas Bônus)</option>
+										</select>
+									</td>
+									<td>
+										<input type="number" class="ataque-bonus-extra" value="0" />
+									</td>
+									<td>
+										<input
+											type="number"
+											class="ataque-total"
+											readonly
+											value="0"
+										/>
+									</td>
+									<td>
+										<input
+											type="text"
+											class="ataque-dano"
+											placeholder="Ex: 1d8+4"
+										/>
+									</td>
+									<td>
+										<input
+											type="text"
+											class="ataque-critico"
+											placeholder="Ex: 19/x2"
+										/>
+									</td>
+									<td>
+										<input
+											type="text"
+											class="ataque-tipo"
+											placeholder="Ex: Corte"
+										/>
+									</td>
+									<td>
+										<input
+											type="text"
+											class="ataque-alcance"
+											placeholder="Ex: Corpo a Corpo"
+										/>
+									</td>
+									<td>
+										<button
+											type="button"
+											class="btn-remover-ataque"
+											onclick="
+												this.parentElement.parentElement.remove();
+												calcularTudo();
+											"
+										>
+											✖
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<button type="button" id="btn-adicionar-ataque">
+						Adicionar Novo Ataque
+					</button>
+				</div>
+			</details>
+
+			<!-- Seção onde o jogador pode anotar informações de campanha, lembranças e objetivos. -->
+			<details class="bloco-ficha" id="secao-anotacoes" open>
+				<summary class="cabecalho-sanfona">
+					<h2>Anotações e Proeficiências</h2>
+				</summary>
+				<textarea
+					id="anotacoes"
+					rows="12"
+					placeholder="Anotações gerais..."
+				></textarea>
 			</details>
 
 			<!-- Seção de perícias: cada linha calcula automaticamente o total com base no atributo e bônus de treinamento. -->
@@ -461,7 +585,7 @@
 								<input type="number" id="p-investigacao-outros" value="0" />
 							</td>
 						</tr>
-                        <tr
+						<tr
 							class="pericia-linha"
 							data-atributo="carisma"
 							data-penalidade="false"
@@ -660,8 +784,20 @@
 				<ul id="lista-inventario">
 					<li class="item-inventario-linha">
 						<input type="text" class="item-nome" placeholder="Nome do Item" />
-						<input type="number" class="item-qtd" value="1" min="1" />
-						<input type="number" class="item-espaco" value="1" min="0" />
+						<input
+							type="number"
+							class="item-qtd"
+							value="1"
+							min="0"
+							step="0.01"
+						/>
+						<input
+							type="number"
+							class="item-espaco"
+							value="1"
+							min="0"
+							step="0.01"
+						/>
 						<button
 							type="button"
 							class="btn-remover-item"
@@ -683,7 +819,7 @@
 				</summary>
 				<textarea
 					id="poderes"
-					rows="6"
+					rows="24"
 					placeholder="Ataque Poderoso, Estilo de Espada..."
 				></textarea>
 			</details>
@@ -693,37 +829,10 @@
 				<summary class="cabecalho-sanfona"><h2>Grimório de Magias</h2></summary>
 				<ul id="lista-magias">
 					<li class="magia-item">
-						<div class="magia-dados-linha">
-							<input
-								type="text"
-								class="magia-nome"
-								placeholder="Nome da Magia"
-							/>
-							<input
-								type="number"
-								class="magia-custo"
-								placeholder="PM"
-								min="0"
-							/>
-							<input
-								type="text"
-								class="magia-execucao"
-								placeholder="Execução"
-							/>
-							<input type="text" class="magia-alcance" placeholder="Alcance" />
-						</div>
-						<div class="magia-dados-linha">
-							<input type="text" class="magia-duracao" placeholder="Duração" />
-							<input
-								type="text"
-								class="magia-resistencia"
-								placeholder="Resistência"
-							/>
-						</div>
 						<textarea
 							class="magia-descricao"
-							rows="2"
-							placeholder="Efeito..."
+							rows="12"
+							placeholder="Nome e Descrição da Magia..."
 						></textarea>
 						<button
 							type="button"
@@ -737,18 +846,6 @@
 				<button type="button" id="btn-adicionar-magia">
 					Adicionar Nova Magia
 				</button>
-			</details>
-
-			<!-- Seção onde o jogador pode anotar informações de campanha, lembranças e objetivos. -->
-			<details class="bloco-ficha" id="secao-anotacoes" open>
-				<summary class="cabecalho-sanfona">
-					<h2>Anotações de Campanha</h2>
-				</summary>
-				<textarea
-					id="anotacoes"
-					rows="6"
-					placeholder="Anotações gerais..."
-				></textarea>
 			</details>
 		</form>
 

@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		.getElementById("btn-adicionar-item")
 		.addEventListener("click", adicionarItemLinha);
 	document
+		.getElementById("btn-adicionar-ataque")
+		.addEventListener("click", adicionarAtaqueLinha);
+	document
 		.getElementById("btn-salvar")
 		.addEventListener("click", exportarFichaJSON);
 	document
@@ -44,6 +47,12 @@ function calcularTudo() {
 	const nivel = parseInt(document.getElementById("nivel").value) || 1;
 	// Metade do nível é usada em muitos cálculos de Tormenta.
 	const metadeNivel = Math.floor(nivel / 2);
+
+	// --- LÓGICA DE CONVERSÃO DE DESLOCAMENTO ---
+	const metrosDeslocamento =
+		parseFloat(document.getElementById("deslocamento").value) || 0;
+	const totalTiles = Math.floor(metrosDeslocamento / 1.5);
+	document.getElementById("deslocamento-tiles").innerText = totalTiles;
 
 	// Calcula o bônus de treino escalonado por nível.
 	let bonusTreino = 2;
@@ -80,7 +89,6 @@ function calcularTudo() {
 	const pvAtributoChave = document.getElementById("pv-atributo-chave").value;
 	const pmAtributoChave = document.getElementById("pm-atributo-chave").value;
 
-    
 	const modPVAtributo =
 		pvAtributoChave && mapaAtributos[pvAtributoChave]
 			? mapaAtributos[pvAtributoChave]
@@ -89,14 +97,14 @@ function calcularTudo() {
 		pmAtributoChave && mapaAtributos[pmAtributoChave]
 			? mapaAtributos[pmAtributoChave]
 			: 0;
-    if (modPMAtributo < 0) modPMAtributo = 0;
+	if (modPMAtributo < 0) modPMAtributo = 0;
 
-    const pvNivel = (pvPorNivel + modPVAtributo) * (nivel - 1) ;
-        if (pvNivel < 0) pvNivel = 1;
+	const pvNivel = (pvPorNivel + modPVAtributo) * (nivel - 1);
+	if (pvNivel < 0) pvNivel = 1;
 
-    const pmNivel = pmPorNivel * (nivel - 1)
+	const pmNivel = pmPorNivel * (nivel - 1);
 
-	const pvMaximo = (pvInicial + modPVAtributo) + pvNivel;
+	const pvMaximo = pvInicial + modPVAtributo + pvNivel;
 
 	const pmMaximo = pmInicial + modPMAtributo + pmNivel;
 
@@ -158,9 +166,10 @@ function calcularTudo() {
 				if (linha.getAttribute("data-apenas-treinada") === "true") {
 					totalPericia = 0; // Perícia sem treino não tem valor se for "apenas treinada"
 				} else {
-				totalPericia =
-					modAtributo + metadeNivel + outrosBonus - penalidadeAplicada;
-			}}
+					totalPericia =
+						modAtributo + metadeNivel + outrosBonus - penalidadeAplicada;
+				}
+			}
 			inputTotal.value = totalPericia;
 		}
 	});
@@ -173,11 +182,36 @@ function calcularTudo() {
 		"#lista-inventario .item-inventario-linha",
 	);
 	itensInventario.forEach((item) => {
-		const qtd = parseInt(item.querySelector(".item-qtd").value) || 0;
-		const espaco = parseInt(item.querySelector(".item-espaco").value) || 0;
+		const qtd = parseFloat(item.querySelector(".item-qtd").value) || 0;
+		const espaco = parseFloat(item.querySelector(".item-espaco").value) || 0;
 		cargaAtualAcumulada += qtd * espaco;
 	});
-	document.getElementById("carga-atual").innerText = cargaAtualAcumulada;
+	document.getElementById("carga-atual").innerText =
+		cargaAtualAcumulada.toFixed(1);
+	// --- CÁLCULO AUTOMÁTICO DE ATAQUES ---
+	const totalLuta =
+		parseInt(document.getElementById("p-luta-total").value) || 0;
+	const totalPontaria =
+		parseInt(document.getElementById("p-pontaria-total").value) || 0;
+
+	const linhasAtaques = document.querySelectorAll(".ataque-linha");
+	linhasAtaques.forEach((linha) => {
+		const seletorPericia = linha.querySelector(".ataque-pericia").value;
+		const inputBonusExtra =
+			parseInt(linha.querySelector(".ataque-bonus-extra").value) || 0;
+		const inputTotalAtaque = linha.querySelector(".ataque-total");
+
+		let valorBasePericia = 0;
+		if (seletorPericia === "luta") {
+			valorBasePericia = totalLuta;
+		} else if (seletorPericia === "pontaria") {
+			valorBasePericia = totalPontaria;
+		}
+
+		// Teste de Ataque = Valor Atualizado da Perícia + Bônus Extra da Arma/Buff
+		inputTotalAtaque.value = valorBasePericia + inputBonusExtra;
+	});
+	// ------------------------------------------------
 }
 
 /**
@@ -189,17 +223,7 @@ function adicionarMagiaLinha() {
 	const novoItem = document.createElement("li");
 	novoItem.className = "magia-item";
 	novoItem.innerHTML = `
-        <div class="magia-dados-linha">
-            <input type="text" class="magia-nome" placeholder="Nome da Magia">
-            <input type="number" class="magia-custo" placeholder="PM" min="0">
-            <input type="text" class="magia-execucao" placeholder="Execução">
-            <input type="text" class="magia-alcance" placeholder="Alcance">
-        </div>
-        <div class="magia-dados-linha">
-            <input type="text" class="magia-duracao" placeholder="Duração">
-            <input type="text" class="magia-resistencia" placeholder="Resistência">
-        </div>
-        <textarea class="magia-descricao" rows="2" placeholder="Efeito..."></textarea>
+        <textarea class="magia-descricao" rows="12" placeholder="Nome e Descrição da Magia..."></textarea>
         <button type="button" class="btn-remover-magia" onclick="this.parentElement.remove(); calcularTudo();">Remover Magia</button>
     `;
 	lista.appendChild(novoItem);
@@ -215,11 +239,36 @@ function adicionarItemLinha() {
 	novoItem.className = "item-inventario-linha";
 	novoItem.innerHTML = `
         <input type="text" class="item-nome" placeholder="Nome do Item">
-        <input type="number" class="item-qtd" value="1" min="1">
-        <input type="number" class="item-espaco" value="0" min="0">
+        <input type="number" class="item-qtd" value="1" min="0" step="0.01">
+        <input type="number" class="item-espaco" value="0" min="0" step="0.01">
         <button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo();">Remover</button>
     `;
 	lista.appendChild(novoItem);
+}
+
+function adicionarAtaqueLinha() {
+	const lista = document.getElementById("lista-ataques");
+	const novaLinha = document.createElement("tr");
+	novaLinha.className = "ataque-linha";
+	novaLinha.innerHTML = `
+        <td><input type="text" class="ataque-nome" placeholder="Nome da Arma"></td>
+        <td>
+            <select class="ataque-pericia">
+                <option value="luta" selected>Luta (Corpo a Corpo)</option>
+                <option value="pontaria">Pontaria (À Distância)</option>
+                <option value="nenhum">Nenhum (Apenas Bônus)</option>
+            </select>
+        </td>
+        <td><input type="number" class="ataque-bonus-extra" value="0"></td>
+        <td><input type="number" class="ataque-total" readonly value="0"></td>
+        <td><input type="text" class="ataque-dano" placeholder="Dano"></td>
+        <td><input type="text" class="ataque-critico" placeholder="Crítico"></td>
+        <td><input type="text" class="ataque-tipo" placeholder="Tipo"></td>
+        <td><input type="text" class="ataque-alcance" placeholder="Alcance"></td>
+        <td><button type="button" class="btn-remover-ataque" onclick="this.parentElement.parentElement.remove(); calcularTudo();">✖</button></td>
+    `;
+	lista.appendChild(novaLinha);
+	calcularTudo(); // Roda o cálculo para atualizar a nova linha instantaneamente
 }
 
 /**
@@ -296,6 +345,7 @@ function exportarFichaJSON() {
 			divindade: document.getElementById("divindade").value,
 			origem: document.getElementById("origem").value,
 			tamanho: document.getElementById("tamanho").value,
+			deslocamento: document.getElementById("deslocamento").value,
 		},
 		atributos: {
 			forca: document.getElementById("forca").value,
@@ -329,6 +379,7 @@ function exportarFichaJSON() {
 		periciasOutros: {},
 		inventario: [],
 		magias: [],
+		ataques: [],
 		poderes: document.getElementById("poderes").value,
 		anotacoes: document.getElementById("anotacoes").value,
 	};
@@ -361,18 +412,26 @@ function exportarFichaJSON() {
 			});
 		});
 
-	// Adiciona cada magia com todos os seus campos ao objeto de backup.
+	// Adiciona cada magia com sua descrição ao objeto de backup.
 	document.querySelectorAll("#lista-magias .magia-item").forEach((magia) => {
 		fichaDados.magias.push({
-			nome: magia.querySelector(".magia-nome").value,
-			custo: magia.querySelector(".magia-custo").value,
-			execucao: magia.querySelector(".magia-execucao").value,
-			alcance: magia.querySelector(".magia-alcance").value,
-			duracao: magia.querySelector(".magia-duracao").value,
-			resistencia: magia.querySelector(".magia-resistencia").value,
 			descricao: magia.querySelector(".magia-descricao").value,
 		});
 	});
+
+	document
+		.querySelectorAll("#lista-ataques .ataque-linha")
+		.forEach((ataque) => {
+			fichaDados.ataques.push({
+				nome: ataque.querySelector(".ataque-nome").value,
+				pericia: ataque.querySelector(".ataque-pericia").value,
+				bonusExtra: ataque.querySelector(".ataque-bonus-extra").value,
+				dano: ataque.querySelector(".ataque-dano").value,
+				critico: ataque.querySelector(".ataque-critico").value,
+				tipo: ataque.querySelector(".ataque-tipo").value,
+				alcance: ataque.querySelector(".ataque-alcance").value,
+			});
+		});
 
 	// Converte o objeto em texto JSON e baixa como arquivo.
 	const dataStr =
@@ -382,7 +441,7 @@ function exportarFichaJSON() {
 	downloadAnchor.setAttribute("href", dataStr);
 	downloadAnchor.setAttribute(
 		"download",
-		`Ficha_${fichaDados.dadosBasicos.nome || "Personagem"}.json`,
+		`Ficha_${fichaDados.dadosBasicos.nome || "Personagem"}_Lvl:${fichaDados.dadosBasicos.nivel}.json`,
 	);
 	document.body.appendChild(downloadAnchor);
 	downloadAnchor.click();
@@ -482,8 +541,8 @@ function importarFichaJSON(evento) {
 				novoItem.className = "item-inventario-linha";
 				novoItem.innerHTML = `
                     <input type="text" class="item-nome" value="${item.nome}">
-                    <input type="number" class="item-qtd" value="${item.qtd}" min="1">
-                    <input type="number" class="item-espaco" value="${item.espaco}" min="0">
+                    <input type="number" class="item-qtd" value="${item.qtd}" min="0" step="0.01">
+                    <input type="number" class="item-espaco" value="${item.espaco}" min="0" step="0.01">
                     <button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo();">Remover</button>
                 `;
 				listaInventario.appendChild(novoItem);
@@ -496,21 +555,38 @@ function importarFichaJSON(evento) {
 				const novoItem = document.createElement("li");
 				novoItem.className = "magia-item";
 				novoItem.innerHTML = `
-                    <div class="magia-dados-linha">
-                        <input type="text" class="magia-nome" value="${magia.nome}">
-                        <input type="number" class="magia-custo" value="${magia.custo}" min="0">
-                        <input type="text" class="magia-execucao" value="${magia.execucao}">
-                        <input type="text" class="magia-alcance" value="${magia.alcance}">
-                    </div>
-                    <div class="magia-dados-linha">
-                        <input type="text" class="magia-duracao" value="${magia.duracao}">
-                        <input type="text" class="magia-resistencia" value="${magia.resistencia}">
-                    </div>
-                    <textarea class="magia-descricao" rows="2">${magia.descricao}</textarea>
+                    <textarea class="magia-descricao" rows="12">${magia.descricao}</textarea>
                     <button type="button" class="btn-remover-magia" onclick="this.parentElement.remove(); calcularTudo();">Remover Magia</button>
                 `;
 				listaMagias.appendChild(novoItem);
 			});
+
+			const listaAtaques = document.getElementById("lista-ataques");
+			listaAtaques.innerHTML = "";
+			if (dados.ataques) {
+				dados.ataques.forEach((ataque) => {
+					const novaLinha = document.createElement("tr");
+					novaLinha.className = "ataque-linha";
+					novaLinha.innerHTML = `
+                        <td><input type="text" class="ataque-nome" value="${ataque.nome}"></td>
+                        <td>
+                            <select class="ataque-pericia">
+                                <option value="luta" ${ataque.pericia === "luta" ? "selected" : ""}>Luta (Corpo a Corpo)</option>
+                                <option value="pontaria" ${ataque.pericia === "pontaria" ? "selected" : ""}>Pontaria (À Distância)</option>
+                                <option value="nenhum" ${ataque.pericia === "nenhum" ? "selected" : ""}>Nenhum (Apenas Bônus)</option>
+                            </select>
+                        </td>
+                        <td><input type="number" class="ataque-bonus-extra" value="${ataque.bonusExtra}"></td>
+                        <td><input type="number" class="ataque-total" readonly value="0"></td>
+                        <td><input type="text" class="ataque-dano" value="${ataque.dano}"></td>
+                        <td><input type="text" class="ataque-critico" value="${ataque.critico}"></td>
+                        <td><input type="text" class="ataque-tipo" value="${ataque.tipo}"></td>
+                        <td><input type="text" class="ataque-alcance" value="${ataque.alcance}"></td>
+                        <td><button type="button" class="btn-remover-ataque" onclick="this.parentElement.parentElement.remove(); calcularTudo();">✖</button></td>
+                    `;
+					listaAtaques.appendChild(novaLinha);
+				});
+			}
 
 			document.getElementById("poderes").value = dados.poderes || "";
 			document.getElementById("anotacoes").value = dados.anotacoes || "";

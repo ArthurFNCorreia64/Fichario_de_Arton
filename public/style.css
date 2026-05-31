@@ -4,176 +4,201 @@
    ========================================================================== */
 
 /* Importação de fontes de fantasia e legibilidade */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
-    /* Paleta de Cores da Tormenta (Dark Mode) */
-    --bg-principal: #0d0d0f;       /* Abismo escuro de fundo */
-    --bg-bloco: #18181c;           /* Placas de ferro/muralha escuro */
-    --bg-input: #0f0f12;           /* Fundo dos campos de digitação */
-    
-    --vermelho-tormenta: #9c1c1c;  /* O rubro vivo da Tormenta */
-    --vermelho-profundo: #5c0f0f;  /* Sangue coagulado / Sombras */
-    --vermelho-brilho: #d93838;    /* Energia da Tormenta ativa */
-    
-    --ouro-velho: #dfb15b;         /* Cor para totais e bônus calculados */
-    --ouro-brilho: #f3cb7a;        /* Destaque para focos */
-    
-    --texto-principal: #e3e3e6;   /* Cinza claro para leitura confortável */
-    --texto-mutado: #9a9aa4;      /* Cinza cinzento para labels secundárias */
-    
-    /* Fontes */
-    --fonte-fantasia: 'Cinzel', 'Times New Roman', serif;
-    --fonte-leitura: 'Inter', 'Segoe UI', sans-serif;
-    
-    /* Bordas e Efeitos */
-    --borda-ferro: 2px solid #2d2d35;
-    --borda-rubro: 2px solid var(--vermelho-tormenta);
-    --sombra-bloco: 0 4px 15px rgba(0, 0, 0, 0.6);
+	/* Paleta de Cores da Tormenta (Dark Mode) */
+	--bg-principal: #0d0d0f; /* Abismo escuro de fundo */
+	--bg-bloco: #18181c; /* Placas de ferro/muralha escuro */
+	--bg-input: #0f0f12; /* Fundo dos campos de digitação */
+
+	--vermelho-tormenta: #9c1c1c; /* O rubro vivo da Tormenta */
+	--vermelho-profundo: #5c0f0f; /* Sangue coagulado / Sombras */
+	--vermelho-brilho: #d93838; /* Energia da Tormenta ativa */
+
+	--ouro-velho: #dfb15b; /* Cor para totais e bônus calculados */
+	--ouro-brilho: #f3cb7a; /* Destaque para focos */
+
+	--texto-principal: #e3e3e6; /* Cinza claro para leitura confortável */
+	--texto-mutado: #9a9aa4; /* Cinza cinzento para labels secundárias */
+
+	/* Fontes */
+	--fonte-fantasia: "Cinzel", "Times New Roman", serif;
+	--fonte-leitura: "Inter", "Segoe UI", sans-serif;
+
+	/* Bordas e Efeitos */
+	--borda-ferro: 2px solid #2d2d35;
+	--borda-rubro: 2px solid var(--vermelho-tormenta);
+	--sombra-bloco: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 /* Configurações Gerais da Página */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-    background-color: var(--bg-principal);
-    background-image: 
-        radial-gradient(circle at 50% 0%, rgba(156, 28, 28, 0.15) 0%, transparent 50%),
-        linear-gradient(to bottom, rgba(13, 13, 15, 0.8), rgba(13, 13, 15, 1));
-    color: var(--texto-principal);
-    font-family: var(--fonte-leitura);
-    line-height: 1.5;
-    padding: 20px 10px;
+	background-color: var(--bg-principal);
+	background-image:
+		radial-gradient(
+			circle at 50% 0%,
+			rgba(156, 28, 28, 0.15) 0%,
+			transparent 50%
+		),
+		linear-gradient(to bottom, rgba(13, 13, 15, 0.8), rgba(13, 13, 15, 1));
+	color: var(--texto-principal);
+	font-family: var(--fonte-leitura);
+	line-height: 1.5;
+	padding: 20px 10px;
 }
 
 /* Customização de Scrollbar (Barra de rolagem temática) */
 ::-webkit-scrollbar {
-    width: 10px;
+	width: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--bg-principal);
+	background: var(--bg-principal);
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--vermelho-profundo);
-    border: 2px solid var(--bg-principal);
-    border-radius: 4px;
+	background: var(--vermelho-profundo);
+	border: 2px solid var(--bg-principal);
+	border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--vermelho-tormenta);
+	background: var(--vermelho-tormenta);
 }
 
 /* ==========================================================================
    PAINEL DE CONTROLE (HEADER)
    ========================================================================== */
 #painel-controle {
-    background: linear-gradient(135deg, var(--vermelho-profundo), #210505);
-    border: 2px solid var(--ouro-velho);
-    border-radius: 8px;
-    box-shadow: var(--sombra-bloco), inset 0 0 15px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    margin-bottom: 25px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+	background: linear-gradient(135deg, var(--vermelho-profundo), #210505);
+	border: 2px solid var(--ouro-velho);
+	border-radius: 8px;
+	box-shadow:
+		var(--sombra-bloco),
+		inset 0 0 15px rgba(0, 0, 0, 0.5);
+	padding: 20px;
+	margin-bottom: 25px;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
 }
 
 #painel-controle::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    border: 1px solid rgba(223, 177, 91, 0.3);
-    margin: 3px;
-    pointer-events: none;
-    border-radius: 5px;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1px solid rgba(223, 177, 91, 0.3);
+	margin: 3px;
+	pointer-events: none;
+	border-radius: 5px;
 }
 
 #painel-controle h1 {
-    font-family: var(--fonte-fantasia);
-    color: var(--ouro-velho);
-    font-size: 1.8rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    margin-bottom: 15px;
-    letter-spacing: 1px;
+	font-family: var(--fonte-fantasia);
+	color: var(--ouro-velho);
+	font-size: 1.8rem;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	margin-bottom: 15px;
+	letter-spacing: 1px;
 }
 
 .botoes-backup {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+	flex-wrap: wrap;
 }
 
 /* Estilização de Botões e Labels Interativas */
-button, #label-carregar {
-    background: linear-gradient(to bottom, #2a2a30, #1c1c21);
-    border: 1px solid var(--vermelho-tormenta);
-    color: var(--texto-principal);
-    font-family: var(--fonte-fantasia);
-    font-weight: 700;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    text-shadow: 1px 1px 2px black;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-    display: inline-block;
+button,
+#label-carregar {
+	background: linear-gradient(to bottom, #2a2a30, #1c1c21);
+	border: 1px solid var(--vermelho-tormenta);
+	color: var(--texto-principal);
+	font-family: var(--fonte-fantasia);
+	font-weight: 700;
+	padding: 10px 20px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	text-shadow: 1px 1px 2px black;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+	display: inline-block;
 }
 
-button:hover, #label-carregar:hover {
-    background: linear-gradient(to bottom, var(--vermelho-tormenta), var(--vermelho-profundo));
-    border-color: var(--ouro-velho);
-    color: #fff;
-    box-shadow: 0 0 8px rgba(217, 56, 56, 0.6);
-    transform: translateY(-1px);
+button:hover,
+#label-carregar:hover {
+	background: linear-gradient(
+		to bottom,
+		var(--vermelho-tormenta),
+		var(--vermelho-profundo)
+	);
+	border-color: var(--ouro-velho);
+	color: #fff;
+	box-shadow: 0 0 8px rgba(217, 56, 56, 0.6);
+	transform: translateY(-1px);
 }
 
 button:active {
-    transform: translateY(1px);
+	transform: translateY(1px);
 }
 
 /* ==========================================================================
    FORMULÁRIO E BLOCOS DA FICHA (ACCORDIONS)
    ========================================================================== */
 #ficha-form {
-    max-width: 1200px;
-    margin: 0 auto;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 
 .bloco-ficha {
-    background-color: var(--bg-bloco);
-    border: var(--borda-ferro);
-    border-radius: 6px;
-    box-shadow: var(--sombra-bloco);
-    margin-bottom: 20px;
-    overflow: hidden;
+	background-color: var(--bg-bloco);
+	border: var(--borda-ferro);
+	border-radius: 6px;
+	box-shadow: var(--sombra-bloco);
+	margin-bottom: 20px;
+	overflow: hidden;
 }
 
 /* Cabeçalho Sanfona (<summary>) - Formato de Banner Pontiagudo Trasparente */
 .cabecalho-sanfona {
-    background: linear-gradient(90deg, var(--vermelho-profundo) 0%, #210505 60%, var(--bg-bloco) 100%);
-    padding: 12px 18px;
-    cursor: pointer;
-    border-bottom: 2px solid var(--vermelho-tormenta);
-    user-select: none;
-    outline: none;
-    transition: background 0.3s;
+	background: linear-gradient(
+		90deg,
+		var(--vermelho-profundo) 0%,
+		#210505 60%,
+		var(--bg-bloco) 100%
+	);
+	padding: 12px 18px;
+	cursor: pointer;
+	border-bottom: 2px solid var(--vermelho-tormenta);
+	user-select: none;
+	outline: none;
+	transition: background 0.3s;
 }
 
 .cabecalho-sanfona:hover {
-    background: linear-gradient(90deg, var(--vermelho-tormenta) 0%, var(--vermelho-profundo) 70%, var(--bg-bloco) 100%);
+	background: linear-gradient(
+		90deg,
+		var(--vermelho-tormenta) 0%,
+		var(--vermelho-profundo) 70%,
+		var(--bg-bloco) 100%
+	);
 }
 
 .cabecalho-sanfona h2 {
-    font-family: var(--fonte-fantasia);
-    color: #ffffff;
-    font-size: 1.2rem;
-    letter-spacing: 1.5px;
-    display: inline-block;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+	font-family: var(--fonte-fantasia);
+	color: #ffffff;
+	font-size: 1.2rem;
+	letter-spacing: 1.5px;
+	display: inline-block;
+	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 /* Inputs, Selects e Textareas Gerais */
@@ -181,71 +206,73 @@ input[type="text"],
 input[type="number"],
 select,
 textarea {
-    background-color: var(--bg-input);
-    border: 1px solid #3d3d4a;
-    color: var(--texto-principal);
-    font-family: var(--fonte-leitura);
-    padding: 8px 12px;
-    border-radius: 4px;
-    width: 100%;
-    transition: all 0.2s ease;
+	background-color: var(--bg-input);
+	border: 1px solid #3d3d4a;
+	color: var(--texto-principal);
+	font-family: var(--fonte-leitura);
+	padding: 8px 12px;
+	border-radius: 4px;
+	width: 100%;
+	transition: all 0.2s ease;
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--vermelho-brilho);
-    box-shadow: 0 0 8px rgba(217, 56, 56, 0.4);
-    outline: none;
-    background-color: #14141a;
+input:focus,
+select:focus,
+textarea:focus {
+	border-color: var(--vermelho-brilho);
+	box-shadow: 0 0 8px rgba(217, 56, 56, 0.4);
+	outline: none;
+	background-color: #14141a;
 }
 
 /* Inputs Calculados Automáticos (Readonly) - Estilo Ouro Velho */
 input[readonly] {
-    background-color: #211c15 !important;
-    color: var(--ouro-velho) !important;
-    border-color: #54442b !important;
-    font-weight: 700;
-    text-align: center;
-    font-size: 1.1rem;
-    text-shadow: 0 0 5px rgba(223, 177, 91, 0.2);
+	background-color: #211c15 !important;
+	color: var(--ouro-velho) !important;
+	border-color: #54442b !important;
+	font-weight: 700;
+	text-align: center;
+	font-size: 1.1rem;
+	text-shadow: 0 0 5px rgba(223, 177, 91, 0.2);
 }
 
 label {
-    font-size: 0.85rem;
-    color: var(--texto-mutado);
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    display: block;
+	font-size: 0.85rem;
+	color: var(--texto-mutado);
+	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	margin-bottom: 4px;
+	display: block;
 }
 
 /* Checkboxes nativos estilizados pelo browser moderno */
 input[type="checkbox"] {
-    accent-color: var(--vermelho-tormenta);
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
+	accent-color: var(--vermelho-tormenta);
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
 }
 
 /* ==========================================================================
    SEÇÃO 1: DADOS BÁSICOS
    ========================================================================== */
 .grid-dados {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    padding: 20px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 15px;
+	padding: 20px;
 }
 
 .campo-destaque label {
-    color: var(--vermelho-brilho);
+	color: var(--vermelho-brilho);
 }
 .campo-destaque input {
-    border: 1px solid var(--vermelho-tormenta);
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #fff;
-    text-align: center;
+	border: 1px solid var(--vermelho-tormenta);
+	font-weight: bold;
+	font-size: 1.2rem;
+	color: #fff;
+	text-align: center;
 }
 
 /* ==========================================================================
@@ -253,352 +280,530 @@ input[type="checkbox"] {
    Estilizados como os cartuchos ornamentados da ficha impressa
    ========================================================================== */
 .grid-atributos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 15px;
-    padding: 20px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+	gap: 15px;
+	padding: 20px;
 }
 
 .campo-atributo {
-    background: linear-gradient(135deg, #241414 0%, #1a1a1e 100%);
-    border: 2px solid var(--vermelho-tormenta);
-    border-radius: 8px;
-    padding: 12px 8px;
-    text-align: center;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-    position: relative;
-    transition: transform 0.2s;
+	background: linear-gradient(135deg, #241414 0%, #1a1a1e 100%);
+	border: 2px solid var(--vermelho-tormenta);
+	border-radius: 8px;
+	padding: 12px 8px;
+	text-align: center;
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+	position: relative;
+	transition: transform 0.2s;
 }
 
 .campo-atributo:hover {
-    transform: scale(1.03);
-    border-color: var(--vermelho-brilho);
+	transform: scale(1.03);
+	border-color: var(--vermelho-brilho);
 }
 
 /* "Asas" decorativas laterais emulando os recortes pontiagudos da folha oficial */
-.campo-atributo::before, .campo-atributo::after {
-    content: '';
-    position: absolute;
-    top: 35%;
-    width: 4px;
-    height: 30%;
-    background-color: var(--vermelho-tormenta);
+.campo-atributo::before,
+.campo-atributo::after {
+	content: "";
+	position: absolute;
+	top: 35%;
+	width: 4px;
+	height: 30%;
+	background-color: var(--vermelho-tormenta);
 }
-.campo-atributo::before { left: -3px; border-radius: 2px 0 0 2px; }
-.campo-atributo::after { right: -3px; border-radius: 0 2px 2px 0; }
+.campo-atributo::before {
+	left: -3px;
+	border-radius: 2px 0 0 2px;
+}
+.campo-atributo::after {
+	right: -3px;
+	border-radius: 0 2px 2px 0;
+}
 
 .campo-atributo label {
-    font-family: var(--fonte-fantasia);
-    color: #ffffff;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+	font-family: var(--fonte-fantasia);
+	color: #ffffff;
+	font-size: 1rem;
+	margin-bottom: 8px;
+	letter-spacing: 1px;
 }
 
 .campo-atributo input[type="number"] {
-    font-size: 1.8rem;
-    font-weight: 800;
-    text-align: center;
-    background: transparent;
-    border: none;
-    color: var(--vermelho-brilho);
-    padding: 0;
+	font-size: 1.8rem;
+	font-weight: 800;
+	text-align: center;
+	background: transparent;
+	border: none;
+	color: var(--vermelho-brilho);
+	padding: 0;
 }
 .campo-atributo input[type="number"]:focus {
-    box-shadow: none;
-    color: #fff;
+	box-shadow: none;
+	color: #fff;
 }
 
 /* Remove as setinhas padrão do input number para ficar limpo */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 input[type="number"] {
-    appearance: textfield;
-    -moz-appearance: textfield;
+	appearance: textfield;
+	-moz-appearance: textfield;
 }
 
 /* ==========================================================================
    SEÇÃO 3: STATUS, DEFESA E CONJURAÇÃO
    ========================================================================== */
 .sub-grid-status {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-    padding: 20px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 20px;
+	padding: 20px;
 }
 
 .sub-bloco {
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid #2a2a33;
-    border-radius: 6px;
-    padding: 15px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid #2a2a33;
+	border-radius: 6px;
+	padding: 15px;
 }
 
 .sub-bloco h3 {
-    font-family: var(--fonte-fantasia);
-    color: var(--ouro-velho);
-    font-size: 0.95rem;
-    border-bottom: 1px solid var(--vermelho-profundo);
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
+	font-family: var(--fonte-fantasia);
+	color: var(--ouro-velho);
+	font-size: 0.95rem;
+	border-bottom: 1px solid var(--vermelho-profundo);
+	padding-bottom: 6px;
+	margin-bottom: 12px;
+	letter-spacing: 0.5px;
 }
 
 .conteudo-sub-bloco {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
 }
 
 .campo-duplo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    background-color: var(--bg-input);
-    padding: 6px 10px;
-    border-radius: 4px;
-    border: 1px solid #22222a;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+	background-color: var(--bg-input);
+	padding: 6px 10px;
+	border-radius: 4px;
+	border: 1px solid #22222a;
 }
 
 .campo-duplo label {
-    margin-bottom: 0;
-    min-width: 65px;
-    font-weight: 700;
+	margin-bottom: 0;
+	min-width: 65px;
+	font-weight: 700;
 }
 
 .campo-duplo input {
-    border: none;
-    padding: 4px;
-    text-align: center;
-    font-size: 1.1rem;
+	border: none;
+	padding: 4px;
+	text-align: center;
+	font-size: 1.1rem;
 }
 
 /* Destaque específico para PV (Verde Muted/Tranquilo) e PM (Azul Muted) se desejar, 
    mas mantendo a identidade, usamos tons rubros/escuros. */
-#pv-atual, #pv-max { color: #ff5252; font-weight: bold; }
-#pm-atual, #pm-max { color: #448aff; font-weight: bold; }
+#pv-atual,
+#pv-max {
+	color: #ff5252;
+	font-weight: bold;
+}
+#pm-atual,
+#pm-max {
+	color: #448aff;
+	font-weight: bold;
+}
 
 .campo-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 12px 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 12px 0;
 }
 .campo-checkbox label {
-    margin-bottom: 0;
-    cursor: pointer;
+	margin-bottom: 0;
+	cursor: pointer;
 }
 
 /* ==========================================================================
    SEÇÃO 4: PERÍCIAS (TABELA)
    ========================================================================== */
 #tabela-pericias {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
 }
 
 #tabela-pericias thead th {
-    background-color: #121215;
-    font-family: var(--fonte-fantasia);
-    color: var(--ouro-velho);
-    font-size: 0.85rem;
-    padding: 12px;
-    border-bottom: 2px solid var(--vermelho-tormenta);
-    letter-spacing: 0.5px;
+	background-color: #121215;
+	font-family: var(--fonte-fantasia);
+	color: var(--ouro-velho);
+	font-size: 0.85rem;
+	padding: 12px;
+	border-bottom: 2px solid var(--vermelho-tormenta);
+	letter-spacing: 0.5px;
 }
 
 .pericia-linha {
-    border-bottom: 1px solid #1f1f26;
-    transition: background-color 0.15s;
+	border-bottom: 1px solid #1f1f26;
+	transition: background-color 0.15s;
 }
 
 .pericia-linha:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.01);
+	background-color: rgba(255, 255, 255, 0.01);
 }
 
 .pericia-linha:hover {
-    background-color: rgba(156, 28, 28, 0.08);
+	background-color: rgba(156, 28, 28, 0.08);
 }
 
 #tabela-pericias td {
-    padding: 6px 12px;
-    vertical-align: middle;
+	padding: 6px 12px;
+	vertical-align: middle;
 }
 
 #tabela-pericias td:first-child {
-    text-align: center;
-    width: 50px;
+	text-align: center;
+	width: 50px;
 }
 
 /* Tags de atributo ao lado do nome (Ex: (Des)) */
 .attr-tag {
-    color: var(--texto-mutado);
-    font-size: 0.8rem;
-    font-weight: bold;
+	color: var(--texto-mutado);
+	font-size: 0.8rem;
+	font-weight: bold;
 }
 
 .input-pericia-nome {
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 1px dashed #4a4a57 !important;
-    border-radius: 0 !important;
-    padding: 2px 4px !important;
-    width: auto !important;
-    max-width: 120px;
-    color: var(--ouro-brilho);
-    font-style: italic;
+	background: transparent !important;
+	border: none !important;
+	border-bottom: 1px dashed #4a4a57 !important;
+	border-radius: 0 !important;
+	padding: 2px 4px !important;
+	width: auto !important;
+	max-width: 120px;
+	color: var(--ouro-brilho);
+	font-style: italic;
 }
 .input-pericia-nome:focus {
-    border-bottom-color: var(--vermelho-brilho) !important;
-    box-shadow: none !important;
+	border-bottom-color: var(--vermelho-brilho) !important;
+	box-shadow: none !important;
 }
 
 /*Inputs numéricos menores na tabela para poupar espaço fluído */
 #tabela-pericias input[type="number"] {
-    padding: 5px;
-    max-width: 70px;
-    margin: 0 auto;
-    display: block;
+	padding: 5px;
+	max-width: 70px;
+	margin: 0 auto;
+	display: block;
 }
 
 /* ==========================================================================
    SEÇÃO 5, 6, 7 & 8: INVENTÁRIO, PODERES, GRIMÓRIO E ANOTAÇÕES
    ========================================================================== */
 #painel-carga {
-    background-color: #121215;
-    padding: 10px 20px;
-    border-bottom: 1px solid var(--vermelho-profundo);
-    font-size: 0.9rem;
-    color: var(--texto-mutado);
+	background-color: #121215;
+	padding: 10px 20px;
+	border-bottom: 1px solid var(--vermelho-profundo);
+	font-size: 0.9rem;
+	color: var(--texto-mutado);
 }
-#carga-atual { color: var(--vermelho-brilho); font-weight: bold; }
-#carga-maxima { color: var(--texto-principal); }
-
-#lista-inventario, #lista-magias {
-    list-style: none;
-    padding: 15px;
+#carga-atual {
+	color: var(--vermelho-brilho);
+	font-weight: bold;
 }
-
-.item-inventario-linha, .magia-item {
-    background-color: rgba(0,0,0,0.15);
-    border: 1px solid #25252e;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
+#carga-maxima {
+	color: var(--texto-principal);
 }
 
-.item-nome { flex: 3; min-width: 150px; }
-.item-qtd { flex: 1; min-width: 60px; text-align: center; }
-.item-espaco { flex: 1; min-width: 60px; text-align: center; }
+#lista-inventario,
+#lista-magias {
+	list-style: none;
+	padding: 15px;
+}
+
+.item-inventario-linha {
+	background-color: rgba(0, 0, 0, 0.15);
+	border: 1px solid #25252e;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.item-nome {
+	flex: 3;
+	min-width: 150px;
+}
+.item-qtd {
+	flex: 1;
+	min-width: 60px;
+	text-align: center;
+}
+.item-espaco {
+	flex: 1;
+	min-width: 60px;
+	text-align: center;
+}
 
 /* Botões de exclusão/remover */
-.btn-remover-item, .btn-remover-magia {
-    background: linear-gradient(to bottom, #3a1616, #210c0c);
-    border: 1px solid #732222;
-    color: #ff9999;
-    padding: 6px 12px;
-    font-size: 0.8rem;
+.btn-remover-item,
+.btn-remover-magia {
+	background: linear-gradient(to bottom, #3a1616, #210c0c);
+	border: 1px solid #732222;
+	color: #ff9999;
+	padding: 6px 12px;
+	font-size: 0.8rem;
 }
-.btn-remover-item:hover, .btn-remover-magia:hover {
-    background: #9c1c1c;
-    border-color: #ff5252;
-    color: #fff;
-    box-shadow: 0 0 6px rgba(255,82,82,0.4);
+.btn-remover-item:hover,
+.btn-remover-magia:hover {
+	background: #9c1c1c;
+	border-color: #ff5252;
+	color: #fff;
+	box-shadow: 0 0 6px rgba(255, 82, 82, 0.4);
 }
 
 /* Estrutura interna do bloco de magias */
 .magia-item {
-    display: block; /* Empilha os blocos internos de dados */
-    border-left: 3px solid var(--vermelho-tormenta);
+	display: block; /* Empilha os blocos internos de dados */
+	border-left: 3px solid var(--vermelho-tormenta);
+	background-color: rgba(0, 0, 0, 0.15);
+	border: 1px solid #25252e;
+	border-radius: 4px;
+	padding: 10px;
+	margin-bottom: 10px;
 }
 
-.magia-dados-linha {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
+.magia-descricao {
+	margin-bottom: 8px;
+	resize: vertical;
 }
-
-.magia-nome { flex: 2; min-width: 180px; font-weight: bold; color: var(--ouro-brilho); }
-.magia-custo { flex: 0.5; min-width: 60px; text-align: center; }
-.magia-execucao, .magia-alcance, .magia-duracao, .magia-resistencia { flex: 1; min-width: 110px; }
-.magia-descricao { margin-top: 5px; margin-bottom: 8px; resize: vertical; }
 
 /* Botões de inserção ao final das listas */
-#btn-adicionar-item, #btn-adicionar-magia {
-    margin: 0 15px 15px 15px;
-    font-size: 0.85rem;
-    border-color: var(--ouro-velho);
+#btn-adicionar-item,
+#btn-adicionar-magia {
+	margin: 0 15px 15px 15px;
+	font-size: 0.85rem;
+	border-color: var(--ouro-velho);
 }
 
 /* Área de Texto de Habilidades e Anotações */
-textarea#poderes, textarea#anotacoes {
-    padding: 15px;
-    line-height: 1.6;
-    border-radius: 0 0 6px 6px;
-    min-height: 150px;
-    resize: vertical;
-    background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
-    background-size: 100% 24px; /* Linhas sutis tipo caderno antigo */
+textarea#poderes,
+textarea#anotacoes {
+	padding: 15px;
+	line-height: 1.6;
+	border-radius: 0 0 6px 6px;
+	min-height: 150px;
+	resize: vertical;
+	background-image: linear-gradient(
+		rgba(255, 255, 255, 0.01) 1px,
+		transparent 1px
+	);
+	background-size: 100% 24px; /* Linhas sutis tipo caderno antigo */
 }
 
 /* ==========================================================================
    REGRAS DE RESPONSIVIDADE (MOBILE POLISH)
    ========================================================================== */
 @media (max-width: 768px) {
-    body {
-        padding: 10px 5px;
-    }
-    
-    #painel-controle h1 {
-        font-size: 1.4rem;
-    }
-    
-    .grid-dados {
-        grid-template-columns: 1fr 1fr;
-        padding: 10px;
-    }
-    
-    .grid-atributos {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    .sub-grid-status {
-        grid-template-columns: 1fr;
-        padding: 10px;
-    }
+	body {
+		padding: 10px 5px;
+	}
 
-    #tabela-pericias thead {
-        display: none; /* Oculta cabeçalho em telas minúsculas para visualização em lista */
-    }
+	#painel-controle h1 {
+		font-size: 1.4rem;
+	}
 
-    .item-inventario-linha {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .item-nome, .item-qtd, .item-espaco {
-        width: 100%;
-    }
+	.grid-dados {
+		grid-template-columns: 1fr 1fr;
+		padding: 10px;
+	}
+
+	.grid-atributos {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 10px;
+		padding: 10px;
+	}
+
+	.sub-grid-status {
+		grid-template-columns: 1fr;
+		padding: 10px;
+	}
+
+	#tabela-pericias thead {
+		display: none; /* Oculta cabeçalho em telas minúsculas para visualização em lista */
+	}
+
+	.item-inventario-linha {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.item-nome,
+	.item-qtd,
+	.item-espaco {
+		width: 100%;
+	}
 }
 
 @media (max-width: 480px) {
-    .grid-dados {
-        grid-template-columns: 1fr;
-    }
-    
-    .grid-atributos {
-        grid-template-columns: 1fr 1fr;
-    }
+	.grid-dados {
+		grid-template-columns: 1fr;
+	}
+
+	.grid-atributos {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+/* ==========================================================================
+   🏃‍♂️ ESTILIZAÇÃO DO CAMPO DE DESLOCAMENTO
+   ========================================================================== */
+
+.campo-deslocamento-container {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	height: 100%;
+}
+
+.campo-deslocamento-container input[type="number"] {
+	width: 70px;
+	text-align: center;
+}
+
+.texto-tiles {
+	font-size: 0.9rem;
+	color: var(--vermelho-tormenta);
+	font-family: var(--fonte-titulos);
+	white-space: nowrap;
+}
+
+.texto-tiles strong {
+	font-size: 1.1rem;
+	font-family: var(--fonte-dados);
+}
+
+/* ==========================================================================
+   ⚔️ ESTILIZAÇÃO DOS ATAQUES E ARMAS (TEMA TORMENTA)
+   ========================================================================== */
+
+.tabela-responsiva {
+	width: 100%;
+	overflow-x: auto;
+	border-bottom: 1px solid var(--vermelho-profundo);
+}
+
+#tabela-ataques {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+	background-color: transparent;
+}
+
+#tabela-ataques thead th {
+	background-color: #121215;
+	font-family: var(--fonte-fantasia);
+	color: var(--ouro-velho);
+	font-size: 0.85rem;
+	padding: 12px 8px;
+	border-bottom: 2px solid var(--vermelho-tormenta);
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.ataque-linha {
+	border-bottom: 1px solid #1f1f26;
+	transition: background-color 0.15s;
+}
+
+.ataque-linha:hover {
+	background-color: rgba(156, 28, 28, 0.08);
+}
+
+#tabela-ataques td {
+	padding: 8px;
+	vertical-align: middle;
+}
+
+/* Inputs dentro da tabela de ataques */
+#tabela-ataques input[type="text"],
+#tabela-ataques select {
+	background-color: var(--bg-input);
+	border: 1px solid #2d2d35;
+	color: var(--texto-principal);
+	padding: 5px;
+	font-size: 0.9rem;
+}
+
+#tabela-ataques .ataque-nome {
+	font-weight: bold;
+	color: var(--ouro-brilho);
+	min-width: 140px;
+}
+
+/* Destaque para o bônus extra e o total */
+#tabela-ataques input.ataque-bonus-extra {
+	width: 50px;
+	text-align: center;
+}
+
+#tabela-ataques input.ataque-total {
+	width: 55px;
+	/* Mantém o estilo Ouro Velho dos campos calculados */
+	background-color: #211c15 !important;
+	color: var(--ouro-velho) !important;
+	border: 1px solid #54442b !important;
+	font-weight: 700;
+	text-align: center;
+}
+
+/* Botão de adicionar ataque (estilo similar aos outros botões de lista) */
+#btn-adicionar-ataque {
+	margin: 15px;
+	background: linear-gradient(to bottom, #2a2a30, #1c1c21);
+	border: 1px solid var(--ouro-velho);
+	color: var(--texto-principal);
+	font-family: var(--fonte-fantasia);
+	padding: 8px 16px;
+	cursor: pointer;
+	font-size: 0.85rem;
+	border-radius: 4px;
+	transition: all 0.2s;
+}
+
+#btn-adicionar-ataque:hover {
+	background: var(--vermelho-profundo);
+	border-color: var(--vermelho-tormenta);
+	box-shadow: 0 0 8px rgba(217, 56, 56, 0.4);
+}
+
+/* Botão de remoção (X) */
+.btn-remover-ataque {
+	background: transparent;
+	color: var(--vermelho-tormenta);
+	border: 1px solid var(--vermelho-profundo);
+	font-weight: bold;
+	padding: 4px 8px;
+	cursor: pointer;
+	border-radius: 3px;
+	transition: 0.2s;
+}
+
+.btn-remover-ataque:hover {
+	background: var(--vermelho-tormenta);
+	color: white;
 }
