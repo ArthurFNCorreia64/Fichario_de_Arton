@@ -20,9 +20,12 @@ Alunos:
 
 ## Utilização
 
+# Pages:
+Basta acessar:
+https://arthurfncorreia64.github.io/Fichario_de_Arton/
 
-**Local:**
-Basta rodar o comando:
+# Local:
+Basta rodar o comando na raiz do repositório:
 ```text
 node server.js
 ```
