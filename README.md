@@ -18,6 +18,18 @@ Alunos:
 
 ---
 
+## Utilização
+
+
+**Local:**
+Basta rodar o comando:
+```text
+node server.js
+```
+ELe executará a página numa porta local automaticamente, basta acessar http://localhost:3000/ para visualizar o conteúdo.
+
+---
+
 ## Visual & Identidade
 
 O design da aplicação foi diretamente inspirado na ficha oficial impressa de Tormenta 20. Conta com:
