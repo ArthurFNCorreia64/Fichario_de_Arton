@@ -3,16 +3,49 @@
  *
  * Este arquivo controla o comportamento da ficha, conectando o HTML com o
  * JavaScript, atualizando cálculos automáticos e salvando/carregando dados.
+
  */
+
+/* =========================================================================
+	Visão geral do arquivo
+	- Inicialização: evento DOMContentLoaded para ligar eventos e restaurar estado
+	- Persistência: salvarEstado() / restaurarEstado()
+	- Serialização: coletarFichaEmObjeto() / popularFichaDeObjeto()
+	- UI: calcularTudo(), funções que adicionam/removem linhas, inicializadores
+	- Import/Export: exportarFichaJSON(), importarFichaJSON().
+	========================================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 	// Executa o script principal quando o documento HTML estiver pronto.
 	calcularTudo();
 
+	// Restaura estado salvo no localStorage, se existir.
+	restaurarEstado();
+
 	// Pega o formulário e observa mudanças em qualquer campo.
 	const formulario = document.getElementById("ficha-form");
 	formulario.addEventListener("input", calcularTudo);
 	formulario.addEventListener("change", calcularTudo);
+
+	// Salva automaticamente ao mudar qualquer campo do formulário.
+	formulario.addEventListener("input", salvarEstado);
+	formulario.addEventListener("change", salvarEstado);
+
+	// Captura cliques em botões de remoção para salvar após remoção dinâmica
+	document.addEventListener("click", (e) => {
+		const t = e.target;
+		if (
+			t.classList &&
+			(t.classList.contains("btn-remover-item") ||
+				t.classList.contains("btn-remover-magia") ||
+				t.classList.contains("btn-remover-ataque"))
+		) {
+			setTimeout(salvarEstado, 0);
+		}
+	});
+
+	// Salva antes de fechar/recarregar a página para reduzir perda acidental
+	window.addEventListener("beforeunload", salvarEstado);
 
 	// Cria os controles de atributo para cada perícia.
 	inicializarAtributosDasPericias();
@@ -33,13 +66,295 @@ document.addEventListener("DOMContentLoaded", () => {
 	document
 		.getElementById("input-carregar")
 		.addEventListener("change", importarFichaJSON);
+
+	// Botão Reset: limpa o localStorage da ficha e recarrega a página.
+	const btnReset = document.getElementById("btn-reset");
+	if (btnReset) {
+		btnReset.addEventListener("click", () => {
+			if (
+				!confirm(
+					"Tem certeza que deseja resetar a ficha? Isso apagará os dados preenchidos!.",
+				)
+			)
+				return;
+			localStorage.removeItem(STORAGE_KEY);
+			window.removeEventListener("beforeunload", salvarEstado);
+			location.reload();
+		});
+	}
 });
 
-/**
- * Recalcula todos os valores automáticos da ficha.
- *
- * Essa função lê campos do HTML, faz as contas e atualiza o que aparece na tela.
- */
+// -------------------- Configuração / Constantes --------------------
+// Chave usada no localStorage para persistir a ficha
+const STORAGE_KEY = "ficha_torm20_backup";
+
+/* ===================== Persistência (localStorage) =====================
+ * Salva o estado atual da ficha no localStorage.
+ * Reutiliza o objeto montado por `coletarFichaEmObjeto()`.
+ * Proteção: erros no processo são silenciados com um aviso no console.
+ * ===================================================================== */
+function salvarEstado() {
+	try {
+		const fichaDados = coletarFichaEmObjeto();
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(fichaDados));
+	} catch (e) {
+		console.warn("Falha ao salvar estado:", e);
+	}
+}
+
+/* ===================== Restauração (localStorage → formulário) ============
+ * Lê o JSON salvo em `localStorage` e delega a popular os campos para
+ * `popularFichaDeObjeto(dados)`. Erros são registrados no console.
+ * ====================================================================== */
+function restaurarEstado() {
+	try {
+		const texto = localStorage.getItem(STORAGE_KEY);
+		if (!texto) return;
+		const dados = JSON.parse(texto);
+		// Reaproveita a função de importação: aceita um objeto em vez de FileReader.
+		popularFichaDeObjeto(dados);
+	} catch (e) {
+		console.warn("Falha ao restaurar estado:", e);
+	}
+}
+
+/* ===================== Serialização da ficha (form → objeto) ============
+ * Varre o DOM, lê os campos da ficha e monta um objeto plano que pode ser
+ * salvo em `localStorage` ou exportado como JSON. A estrutura final é a
+ * mesma esperada por `popularFichaDeObjeto()`.
+ * ===================================================================== */
+function coletarFichaEmObjeto() {
+	const fichaDados = {
+		dadosBasicos: {
+			nome: document.getElementById("nome").value,
+			jogador: document.getElementById("jogador").value,
+			raca: document.getElementById("raca").value,
+			classe: document.getElementById("classe").value,
+			nivel: document.getElementById("nivel").value,
+			divindade: document.getElementById("divindade").value,
+			origem: document.getElementById("origem").value,
+			tamanho: document.getElementById("tamanho").value,
+			deslocamento: document.getElementById("deslocamento").value,
+		},
+		atributos: {
+			forca: document.getElementById("forca").value,
+			destreza: document.getElementById("destreza").value,
+			constituicao: document.getElementById("constituicao").value,
+			inteligencia: document.getElementById("inteligencia").value,
+			sabedoria: document.getElementById("sabedoria").value,
+			carisma: document.getElementById("carisma").value,
+		},
+		configClasse: {
+			"pv-inicial": document.getElementById("pv-inicial").value,
+			"pm-inicial": document.getElementById("pm-inicial").value,
+			"pv-por-nivel": document.getElementById("pv-por-nivel").value,
+			"pm-por-nivel": document.getElementById("pm-por-nivel").value,
+			"pv-atributo-chave": document.getElementById("pv-atributo-chave").value,
+			"pm-atributo-chave": document.getElementById("pm-atributo-chave").value,
+			"pv-atual": document.getElementById("pv-atual").value,
+			"pv-temporario": document.getElementById("pv-temporario").value,
+			"pm-atual": document.getElementById("pm-atual").value,
+			"pm-temporario": document.getElementById("pm-temporario").value,
+		},
+		defesaCD: {
+			bonusArmadura: document.getElementById("bonus-armadura").value,
+			bonusEscudo: document.getElementById("bonus-escudo").value,
+			outrosDefesa: document.getElementById("outros-defesa").value,
+			ignorarDestreza: document.getElementById("ignorar-destreza").checked,
+			penalidadeArmadura: document.getElementById("penalidade-armadura").value,
+			cdAtributoChave: document.getElementById("cd-atributo-chave").value,
+			cdOutros: document.getElementById("cd-outros").value,
+		},
+		periciasOutros: {},
+		inventario: [],
+		magias: [],
+		ataques: [],
+		poderes: document.getElementById("poderes").value,
+		anotacoes: document.getElementById("anotacoes").value,
+	};
+
+	// Perícias: coleta estado (treinada/outros/atributo) por linha
+	document.querySelectorAll(".pericia-linha").forEach((linha) => {
+		const checkbox = linha.querySelector("input[id$='-treinada']");
+		const inputOutros = linha.querySelector("input[id$='-outros']");
+		const atributoSelecao = linha.querySelector(".pericia-atributo-seletor");
+		const attrChave = atributoSelecao
+			? atributoSelecao.value
+			: linha.getAttribute("data-atributo");
+		if (checkbox && inputOutros) {
+			fichaDados.periciasOutros[checkbox.id] = {
+				treinada: checkbox.checked,
+				outros: inputOutros.value,
+				atributo: attrChave,
+			};
+		}
+	});
+
+	// Inventário: transforma cada linha em um objeto simples
+	document
+		.querySelectorAll("#lista-inventario .item-inventario-linha")
+		.forEach((item) => {
+			fichaDados.inventario.push({
+				nome: item.querySelector(".item-nome").value,
+				qtd: item.querySelector(".item-qtd").value,
+				espaco: item.querySelector(".item-espaco").value,
+			});
+		});
+
+	// Magias: lista de descrições (texto livre)
+	document.querySelectorAll("#lista-magias .magia-item").forEach((magia) => {
+		fichaDados.magias.push({
+			descricao: magia.querySelector(".magia-descricao").value,
+		});
+	});
+
+	// Ataques: cada linha vira um objeto com os campos relevantes
+	document
+		.querySelectorAll("#lista-ataques .ataque-linha")
+		.forEach((ataque) => {
+			fichaDados.ataques.push({
+				nome: ataque.querySelector(".ataque-nome").value,
+				pericia: ataque.querySelector(".ataque-pericia").value,
+				bonusExtra: ataque.querySelector(".ataque-bonus-extra").value,
+				dano: ataque.querySelector(".ataque-dano").value,
+				critico: ataque.querySelector(".ataque-critico").value,
+				tipo: ataque.querySelector(".ataque-tipo").value,
+				alcance: ataque.querySelector(".ataque-alcance").value,
+			});
+		});
+
+	return fichaDados;
+}
+
+/* ===================== Desserialização (objeto → formulário) ===========
+ * Popula os campos do formulário a partir do objeto salvo. Recria linhas
+ * dinâmicas (inventário, magias, ataques) e atualiza seletores/flags.
+ * ===================================================================== */
+function popularFichaDeObjeto(dados) {
+	if (!dados) return;
+
+	// Dados básicos e atributos (campos simples mapeados por id)
+	for (let chave in dados.dadosBasicos) {
+		const el = document.getElementById(chave);
+		if (el) el.value = dados.dadosBasicos[chave];
+	}
+	for (let chave in dados.atributos) {
+		const el = document.getElementById(chave);
+		if (el) el.value = dados.atributos[chave];
+	}
+	for (let chave in dados.configClasse) {
+		const el = document.getElementById(chave);
+		if (el) el.value = dados.configClasse[chave];
+	}
+
+	// Defesa / CD (campos com nomes diferentes na UI)
+	if (dados.defesaCD) {
+		document.getElementById("bonus-armadura").value =
+			dados.defesaCD.bonusArmadura || 0;
+		document.getElementById("bonus-escudo").value =
+			dados.defesaCD.bonusEscudo || 0;
+		document.getElementById("outros-defesa").value =
+			dados.defesaCD.outrosDefesa || 0;
+		document.getElementById("ignorar-destreza").checked =
+			!!dados.defesaCD.ignorarDestreza;
+		document.getElementById("penalidade-armadura").value =
+			dados.defesaCD.penalidadeArmadura || 0;
+		document.getElementById("cd-atributo-chave").value =
+			dados.defesaCD.cdAtributoChave || "";
+		document.getElementById("cd-outros").value = dados.defesaCD.cdOutros || 0;
+	}
+
+	// Perícias: aplica estados salvos (treinada/outros/atributo)
+	if (dados.periciasOutros) {
+		for (let id in dados.periciasOutros) {
+			const checkbox = document.getElementById(id);
+			if (checkbox) {
+				checkbox.checked = dados.periciasOutros[id].treinada;
+				const inputOutros = document.getElementById(
+					id.replace("-treinada", "-outros"),
+				);
+				if (inputOutros) inputOutros.value = dados.periciasOutros[id].outros;
+				const linhaPericia = checkbox.closest(".pericia-linha");
+				if (linhaPericia) {
+					const atributoSelecao = linhaPericia.querySelector(
+						".pericia-atributo-seletor",
+					);
+					if (atributoSelecao) {
+						atributoSelecao.value =
+							dados.periciasOutros[id].atributo || atributoSelecao.value;
+						linhaPericia.setAttribute("data-atributo", atributoSelecao.value);
+					}
+				}
+			}
+		}
+	}
+
+	// Inventário: limpa e recria linhas conforme o objeto salvo
+	const listaInventario = document.getElementById("lista-inventario");
+	listaInventario.innerHTML = "";
+	(dados.inventario || []).forEach((item) => {
+		const novoItem = document.createElement("li");
+		novoItem.className = "item-inventario-linha";
+		novoItem.innerHTML = `
+			<input type="text" class="item-nome" value="${item.nome}">
+			<input type="number" class="item-qtd" value="${item.qtd}" min="0" step="0.01">
+			<input type="number" class="item-espaco" value="${item.espaco}" min="0" step="0.01">
+			<button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo(); salvarEstado();">Remover</button>
+		`;
+		listaInventario.appendChild(novoItem);
+	});
+
+	// Magias: limpa e recria
+	const listaMagias = document.getElementById("lista-magias");
+	listaMagias.innerHTML = "";
+	(dados.magias || []).forEach((magia) => {
+		const novoItem = document.createElement("li");
+		novoItem.className = "magia-item";
+		novoItem.innerHTML = `
+			<textarea class="magia-descricao" rows="12">${magia.descricao}</textarea>
+			<button type="button" class="btn-remover-magia" onclick="this.parentElement.remove(); calcularTudo(); salvarEstado();">Remover Magia</button>
+		`;
+		listaMagias.appendChild(novoItem);
+	});
+
+	// Ataques: recria linhas da tabela de ataques
+	const listaAtaques = document.getElementById("lista-ataques");
+	listaAtaques.innerHTML = "";
+	(dados.ataques || []).forEach((ataque) => {
+		const novaLinha = document.createElement("tr");
+		novaLinha.className = "ataque-linha";
+		novaLinha.innerHTML = `
+			<td><input type="text" class="ataque-nome" value="${ataque.nome}"></td>
+			<td>
+				<select class="ataque-pericia">
+					<option value="luta" ${ataque.pericia === "luta" ? "selected" : ""}>Luta (Corpo a Corpo)</option>
+					<option value="pontaria" ${ataque.pericia === "pontaria" ? "selected" : ""}>Pontaria (À Distância)</option>
+					<option value="nenhum" ${ataque.pericia === "nenhum" ? "selected" : ""}>Nenhum (Apenas Bônus)</option>
+				</select>
+			</td>
+			<td><input type="number" class="ataque-bonus-extra" value="${ataque.bonusExtra}"></td>
+			<td><input type="number" class="ataque-total" readonly value="0"></td>
+			<td><input type="text" class="ataque-dano" value="${ataque.dano}"></td>
+			<td><input type="text" class="ataque-critico" value="${ataque.critico}"></td>
+			<td><input type="text" class="ataque-tipo" value="${ataque.tipo}"></td>
+			<td><input type="text" class="ataque-alcance" value="${ataque.alcance}"></td>
+			<td><button type="button" class="btn-remover-ataque" onclick="this.parentElement.parentElement.remove(); calcularTudo(); salvarEstado();">✖</button></td>
+		`;
+		listaAtaques.appendChild(novaLinha);
+	});
+
+	document.getElementById("poderes").value = dados.poderes || "";
+	document.getElementById("anotacoes").value = dados.anotacoes || "";
+
+	// Re-inicializa seletores/labels dependentes e recalcula tudo
+	inicializarAtributosDasPericias();
+	calcularTudo();
+}
+
+/* ===================== Cálculos e atualização da interface ==============
+ * Função principal de cálculo: atualiza PV/PM, defesa, CDs, perícias,
+ * carga, e totais de ataque. Lê campos do DOM e escreve resultados na UI.
+ * ===================================================================== */
 function calcularTudo() {
 	// Lê o nível atual e usa 1 como valor padrão se o campo estiver vazio.
 	const nivel = parseInt(document.getElementById("nivel").value) || 1;
@@ -221,6 +536,7 @@ function calcularTudo() {
 	// ------------------------------------------------
 }
 
+/* --------------------- Helpers: adicionar linhas na UI ------------------ */
 /**
  * Adiciona uma nova linha na lista de magias.
  * O jogador pode preencher os campos dessa nova magia.
@@ -234,6 +550,7 @@ function adicionarMagiaLinha() {
         <button type="button" class="btn-remover-magia" onclick="this.parentElement.remove(); calcularTudo();">Remover Magia</button>
     `;
 	lista.appendChild(novoItem);
+	salvarEstado();
 }
 
 /**
@@ -251,8 +568,13 @@ function adicionarItemLinha() {
         <button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo();">Remover</button>
     `;
 	lista.appendChild(novoItem);
+	salvarEstado();
 }
 
+/**
+ * Adiciona uma nova linha de ataque na tabela de ataques.
+ * Mantém os mesmos campos e comportamento de remoção existentes.
+ */
 function adicionarAtaqueLinha() {
 	const lista = document.getElementById("lista-ataques");
 	const novaLinha = document.createElement("tr");
@@ -276,8 +598,10 @@ function adicionarAtaqueLinha() {
     `;
 	lista.appendChild(novaLinha);
 	calcularTudo(); // Roda o cálculo para atualizar a nova linha instantaneamente
+	salvarEstado();
 }
 
+/* --------------------- Inicializadores e seletores --------------------- */
 /**
  * Cria ou atualiza o seletor de atributo para cada perícia na tabela.
  * Essa função permite alterar o atributo chave usado no cálculo de cada perícia.
@@ -338,110 +662,12 @@ function inicializarAtributosDasPericias() {
 	});
 }
 
+/* --------------------- Import / Export (backup JSON) ------------------- */
 /**
  * Gera um backup JSON com todos os dados da ficha e inicia o download.
  */
 function exportarFichaJSON() {
-	// Monta um objeto com todas as informações da ficha.
-	const fichaDados = {
-		dadosBasicos: {
-			nome: document.getElementById("nome").value,
-			jogador: document.getElementById("jogador").value,
-			raca: document.getElementById("raca").value,
-			classe: document.getElementById("classe").value,
-			nivel: document.getElementById("nivel").value,
-			divindade: document.getElementById("divindade").value,
-			origem: document.getElementById("origem").value,
-			tamanho: document.getElementById("tamanho").value,
-			deslocamento: document.getElementById("deslocamento").value,
-		},
-		atributos: {
-			forca: document.getElementById("forca").value,
-			destreza: document.getElementById("destreza").value,
-			constituicao: document.getElementById("constituicao").value,
-			inteligencia: document.getElementById("inteligencia").value,
-			sabedoria: document.getElementById("sabedoria").value,
-			carisma: document.getElementById("carisma").value,
-		},
-		configClasse: {
-			"pv-inicial": document.getElementById("pv-inicial").value,
-			"pm-inicial": document.getElementById("pm-inicial").value,
-			"pv-por-nivel": document.getElementById("pv-por-nivel").value,
-			"pm-por-nivel": document.getElementById("pm-por-nivel").value,
-			"pv-atributo-chave": document.getElementById("pv-atributo-chave").value,
-			"pm-atributo-chave": document.getElementById("pm-atributo-chave").value,
-			"pv-atual": document.getElementById("pv-atual").value,
-			"pv-temporario": document.getElementById("pv-temporario").value,
-			"pm-atual": document.getElementById("pm-atual").value,
-			"pm-temporario": document.getElementById("pm-temporario").value,
-		},
-		defesaCD: {
-			bonusArmadura: document.getElementById("bonus-armadura").value,
-			bonusEscudo: document.getElementById("bonus-escudo").value,
-			outrosDefesa: document.getElementById("outros-defesa").value,
-			ignorarDestreza: document.getElementById("ignorar-destreza").checked,
-			penalidadeArmadura: document.getElementById("penalidade-armadura").value,
-			cdAtributoChave: document.getElementById("cd-atributo-chave").value,
-			cdOutros: document.getElementById("cd-outros").value,
-		},
-		periciasOutros: {},
-		inventario: [],
-		magias: [],
-		ataques: [],
-		poderes: document.getElementById("poderes").value,
-		anotacoes: document.getElementById("anotacoes").value,
-	};
-
-	// Inclui também o estado das perícias (treinada, atributo e bônus extras) no backup.
-	document.querySelectorAll(".pericia-linha").forEach((linha) => {
-		const checkbox = linha.querySelector("input[id$='-treinada']");
-		const inputOutros = linha.querySelector("input[id$='-outros']");
-		const atributoSelecao = linha.querySelector(".pericia-atributo-seletor");
-		const attrChave = atributoSelecao
-			? atributoSelecao.value
-			: linha.getAttribute("data-atributo");
-		if (checkbox && inputOutros) {
-			fichaDados.periciasOutros[checkbox.id] = {
-				treinada: checkbox.checked,
-				outros: inputOutros.value,
-				atributo: attrChave,
-			};
-		}
-	});
-
-	// Copia o inventário atual para o objeto que será salvo em JSON.
-	document
-		.querySelectorAll("#lista-inventario .item-inventario-linha")
-		.forEach((item) => {
-			fichaDados.inventario.push({
-				nome: item.querySelector(".item-nome").value,
-				qtd: item.querySelector(".item-qtd").value,
-				espaco: item.querySelector(".item-espaco").value,
-			});
-		});
-
-	// Adiciona cada magia com sua descrição ao objeto de backup.
-	document.querySelectorAll("#lista-magias .magia-item").forEach((magia) => {
-		fichaDados.magias.push({
-			descricao: magia.querySelector(".magia-descricao").value,
-		});
-	});
-
-	document
-		.querySelectorAll("#lista-ataques .ataque-linha")
-		.forEach((ataque) => {
-			fichaDados.ataques.push({
-				nome: ataque.querySelector(".ataque-nome").value,
-				pericia: ataque.querySelector(".ataque-pericia").value,
-				bonusExtra: ataque.querySelector(".ataque-bonus-extra").value,
-				dano: ataque.querySelector(".ataque-dano").value,
-				critico: ataque.querySelector(".ataque-critico").value,
-				tipo: ataque.querySelector(".ataque-tipo").value,
-				alcance: ataque.querySelector(".ataque-alcance").value,
-			});
-		});
-
-	// Converte o objeto em texto JSON, codifica e cria um link de download.
+	const fichaDados = coletarFichaEmObjeto();
 	const dataStr =
 		"data:text/json;charset=utf-8," +
 		encodeURIComponent(JSON.stringify(fichaDados, null, 2));
@@ -458,8 +684,8 @@ function exportarFichaJSON() {
 
 /**
  * Lê um backup JSON e preenche todos os campos da ficha.
- *
- * Se o arquivo não puder ser lido, exibe uma mensagem de erro.
+ * Aceita um `File` a partir de um input do tipo file e realiza mapeamentos
+ * de compatibilidade para versões antigas antes de popular a ficha.
  */
 function importarFichaJSON(evento) {
 	// Recebe o arquivo selecionado no input tipo file.
@@ -469,140 +695,32 @@ function importarFichaJSON(evento) {
 	const leitor = new FileReader();
 	leitor.onload = function (e) {
 		try {
-			// JSON.parse transforma o texto JSON em objeto JavaScript.
 			const dados = JSON.parse(e.target.result);
 
-			// Percorre as chaves do objeto e preenche os campos do formulário.
-			for (let chave in dados.dadosBasicos) {
-				const el = document.getElementById(chave);
-				if (el) el.value = dados.dadosBasicos[chave];
-			}
-			for (let chave in dados.atributos) {
-				const el = document.getElementById(chave);
-				if (el) el.value = dados.atributos[chave];
-			}
-			const configClasseMap = {
-				pvInicial: "pv-inicial",
-				pmInicial: "pm-inicial",
-				pvPorNivel: "pv-por-nivel",
-				pmPorNivel: "pm-por-nivel",
-				pvAtributoChave: "pv-atributo-chave",
-				pmAtributoChave: "pm-atributo-chave",
-				pvAtual: "pv-atual",
-				pvTemporario: "pv-temporario",
-				pmAtual: "pm-atual",
-				pmTemporario: "pm-temporario",
-			};
-			for (let chave in dados.configClasse) {
-				const id = configClasseMap[chave] || chave;
-				const el = document.getElementById(id);
-				if (el) el.value = dados.configClasse[chave];
-			}
-
-			document.getElementById("bonus-armadura").value =
-				dados.defesaCD.bonusArmadura;
-			document.getElementById("bonus-escudo").value =
-				dados.defesaCD.bonusEscudo;
-			document.getElementById("outros-defesa").value =
-				dados.defesaCD.outrosDefesa;
-			document.getElementById("ignorar-destreza").checked =
-				dados.defesaCD.ignorarDestreza;
-			document.getElementById("penalidade-armadura").value =
-				dados.defesaCD.penalidadeArmadura;
-			document.getElementById("cd-atributo-chave").value =
-				dados.defesaCD.cdAtributoChave;
-			document.getElementById("cd-outros").value = dados.defesaCD.cdOutros;
-
-			// Restaura os valores de perícias treinadas, seus atributos e bônus extras.
-			if (dados.periciasOutros) {
-				for (let id in dados.periciasOutros) {
-					const checkbox = document.getElementById(id);
-					if (checkbox) {
-						checkbox.checked = dados.periciasOutros[id].treinada;
-						const inputOutros = document.getElementById(
-							id.replace("-treinada", "-outros"),
-						);
-						if (inputOutros)
-							inputOutros.value = dados.periciasOutros[id].outros;
-
-						const linhaPericia = checkbox.closest(".pericia-linha");
-						if (linhaPericia) {
-							const atributoSelecao = linhaPericia.querySelector(
-								".pericia-atributo-seletor",
-							);
-							if (atributoSelecao) {
-								atributoSelecao.value =
-									dados.periciasOutros[id].atributo || atributoSelecao.value;
-								linhaPericia.setAttribute(
-									"data-atributo",
-									atributoSelecao.value,
-								);
-							}
-						}
-					}
+			// Compatibilidade: mapeia chaves camelCase antigas para o formato atual
+			if (dados && dados.configClasse) {
+				const configMap = {
+					pvInicial: "pv-inicial",
+					pmInicial: "pm-inicial",
+					pvPorNivel: "pv-por-nivel",
+					pmPorNivel: "pm-por-nivel",
+					pvAtributoChave: "pv-atributo-chave",
+					pmAtributoChave: "pm-atributo-chave",
+					pvAtual: "pv-atual",
+					pvTemporario: "pv-temporario",
+					pmAtual: "pm-atual",
+					pmTemporario: "pm-temporario",
+				};
+				const novoConfig = {};
+				for (let chave in dados.configClasse) {
+					const id = configMap[chave] || chave;
+					novoConfig[id] = dados.configClasse[chave];
 				}
+				dados.configClasse = novoConfig;
 			}
 
-			inicializarAtributosDasPericias();
-
-			const listaInventario = document.getElementById("lista-inventario");
-			listaInventario.innerHTML = "";
-			dados.inventario.forEach((item) => {
-				const novoItem = document.createElement("li");
-				novoItem.className = "item-inventario-linha";
-				novoItem.innerHTML = `
-                    <input type="text" class="item-nome" value="${item.nome}">
-                    <input type="number" class="item-qtd" value="${item.qtd}" min="0" step="0.01">
-                    <input type="number" class="item-espaco" value="${item.espaco}" min="0" step="0.01">
-                    <button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo();">Remover</button>
-                `;
-				listaInventario.appendChild(novoItem);
-			});
-
-			// Limpa e recria a lista de magias com os valores salvos no JSON.
-			const listaMagias = document.getElementById("lista-magias");
-			listaMagias.innerHTML = "";
-			dados.magias.forEach((magia) => {
-				const novoItem = document.createElement("li");
-				novoItem.className = "magia-item";
-				novoItem.innerHTML = `
-                    <textarea class="magia-descricao" rows="12">${magia.descricao}</textarea>
-                    <button type="button" class="btn-remover-magia" onclick="this.parentElement.remove(); calcularTudo();">Remover Magia</button>
-                `;
-				listaMagias.appendChild(novoItem);
-			});
-
-			const listaAtaques = document.getElementById("lista-ataques");
-			listaAtaques.innerHTML = "";
-			if (dados.ataques) {
-				dados.ataques.forEach((ataque) => {
-					const novaLinha = document.createElement("tr");
-					novaLinha.className = "ataque-linha";
-					novaLinha.innerHTML = `
-                        <td><input type="text" class="ataque-nome" value="${ataque.nome}"></td>
-                        <td>
-                            <select class="ataque-pericia">
-                                <option value="luta" ${ataque.pericia === "luta" ? "selected" : ""}>Luta (Corpo a Corpo)</option>
-                                <option value="pontaria" ${ataque.pericia === "pontaria" ? "selected" : ""}>Pontaria (À Distância)</option>
-                                <option value="nenhum" ${ataque.pericia === "nenhum" ? "selected" : ""}>Nenhum (Apenas Bônus)</option>
-                            </select>
-                        </td>
-                        <td><input type="number" class="ataque-bonus-extra" value="${ataque.bonusExtra}"></td>
-                        <td><input type="number" class="ataque-total" readonly value="0"></td>
-                        <td><input type="text" class="ataque-dano" value="${ataque.dano}"></td>
-                        <td><input type="text" class="ataque-critico" value="${ataque.critico}"></td>
-                        <td><input type="text" class="ataque-tipo" value="${ataque.tipo}"></td>
-                        <td><input type="text" class="ataque-alcance" value="${ataque.alcance}"></td>
-                        <td><button type="button" class="btn-remover-ataque" onclick="this.parentElement.parentElement.remove(); calcularTudo();">✖</button></td>
-                    `;
-					listaAtaques.appendChild(novaLinha);
-				});
-			}
-
-			document.getElementById("poderes").value = dados.poderes || "";
-			document.getElementById("anotacoes").value = dados.anotacoes || "";
-
-			calcularTudo();
+			popularFichaDeObjeto(dados);
+			salvarEstado();
 			alert("Ficha carregada com sucesso!");
 		} catch (erro) {
 			alert("Erro ao ler o arquivo de backup.");

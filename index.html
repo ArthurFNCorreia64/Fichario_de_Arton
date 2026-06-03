@@ -8,8 +8,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Fichario de Arton</title>
 
-<!-- ÍCONE: RUBI DA TORMENTA (Aba do Navegador) -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23121215' stroke='%23d9ad62' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%239c1c1c' stroke-width='2' stroke-dasharray='4,2'/%3E%3Cpolygon points='50,18 78,45 50,82 22,45' fill='%239c1c1c'/%3E%3Cpolygon points='50,18 50,82 22,45' fill='%23d93838' opacity='0.7'/%3E%3Cpolygon points='50,18 78,45 50,45' fill='%23ffffff' opacity='0.25'/%3E%3Cpolygon points='50,45 78,45 50,82' fill='%23000000' opacity='0.35'/%3E%3C/svg%3E">
+		<!-- ÍCONE: RUBI DA TORMENTA (Aba do Navegador) -->
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23121215' stroke='%23d9ad62' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%239c1c1c' stroke-width='2' stroke-dasharray='4,2'/%3E%3Cpolygon points='50,18 78,45 50,82 22,45' fill='%239c1c1c'/%3E%3Cpolygon points='50,18 50,82 22,45' fill='%23d93838' opacity='0.7'/%3E%3Cpolygon points='50,18 78,45 50,45' fill='%23ffffff' opacity='0.25'/%3E%3Cpolygon points='50,45 78,45 50,82' fill='%23000000' opacity='0.35'/%3E%3C/svg%3E"
+		/>
 
 		<link rel="stylesheet" href="public/style.css" />
 	</head>
@@ -19,10 +23,11 @@
 			<h1>Ficha de Personagem: Tormenta 20 (Jogo do Ano)</h1>
 			<div class="botoes-backup">
 				<!-- Botão que aciona a exportação para JSON -->
-				<button type="button" id="btn-salvar">Exportar Ficha (Backup)</button>
+				<button type="button" id="btn-salvar">Exportar Ficha</button>
+				<button type="button" id="btn-reset">Resetar Ficha</button>
 				<!-- Label que abre o seletor de arquivos de backup -->
 				<label id="label-carregar" for="input-carregar"
-					>Importar Ficha (Carregar Backup)</label
+					>Importar Ficha</label
 				>
 				<!-- Input de arquivo escondido que só é mostrado pelo label -->
 				<input
@@ -111,7 +116,7 @@
              Esses valores vão direto para os cálculos de PV, PM, defesa e perícias. -->
 			<details class="bloco-ficha" id="secao-atributos" open>
 				<summary class="cabecalho-sanfona">
-					<h2>Atributos (Modificadores Diretos)</h2>
+					<h2>Atributos</h2>
 				</summary>
 				<div class="grid-atributos">
 					<div class="campo-atributo">
@@ -371,7 +376,7 @@
 			<!-- Seção onde o jogador pode anotar informações de campanha, lembranças e objetivos. -->
 			<details class="bloco-ficha" id="secao-anotacoes" open>
 				<summary class="cabecalho-sanfona">
-					<h2>Anotações e Proeficiências</h2>
+					<h2>Características e Proeficiências</h2>
 				</summary>
 				<textarea
 					id="anotacoes"
