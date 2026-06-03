@@ -296,11 +296,13 @@ function popularFichaDeObjeto(dados) {
 		const novoItem = document.createElement("li");
 		novoItem.className = "item-inventario-linha";
 		novoItem.innerHTML = `
-			<input type="text" class="item-nome" value="${item.nome}">
-			<input type="number" class="item-qtd" value="${item.qtd}" min="0" step="0.01">
-			<input type="number" class="item-espaco" value="${item.espaco}" min="0" step="0.01">
-			<button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo(); salvarEstado();">Remover</button>
-		`;
+				<input type="text" class="item-nome" value="${item.nome}">
+				<input type="number" class="item-qtd" value="${item.qtd}" min="0" step="0.01">
+				<small class="input-note" title="Quantidade" style="margin-left: 0.4em">Qtd</small>
+				<input type="number" class="item-espaco" value="${item.espaco}" min="0" step="0.01">
+				<small class="input-note" title="Espaços ocupados" style="margin-left: 0.4em">Espaços</small>
+				<button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo(); salvarEstado();">Remover</button>
+			`;
 		listaInventario.appendChild(novoItem);
 	});
 
@@ -562,11 +564,13 @@ function adicionarItemLinha() {
 	const novoItem = document.createElement("li");
 	novoItem.className = "item-inventario-linha";
 	novoItem.innerHTML = `
-        <input type="text" class="item-nome" placeholder="Nome do Item">
-        <input type="number" class="item-qtd" value="1" min="0" step="0.01">
-        <input type="number" class="item-espaco" value="0" min="0" step="0.01">
-        <button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo();">Remover</button>
-    `;
+		<input type="text" class="item-nome" placeholder="Nome do Item">
+		<input type="number" class="item-qtd" value="1" min="0" step="0.01">
+		<small class="input-note" title="Quantidade" style="margin-left: 0.4em">Qtd</small>
+		<input type="number" class="item-espaco" value="0" min="0" step="0.01">
+		<small class="input-note" title="Espaços ocupados" style="margin-left: 0.4em">Espaços</small>
+		<button type="button" class="btn-remover-item" onclick="this.parentElement.remove(); calcularTudo(); salvarEstado();">Remover</button>
+	`;
 	lista.appendChild(novoItem);
 	salvarEstado();
 }

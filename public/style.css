@@ -549,14 +549,36 @@ input[type="number"] {
 	min-width: 150px;
 }
 .item-qtd {
-	flex: 1;
+	/* largura fixa para evitar que o input ocupe 100% do espaço */
+	flex: 0 0 72px;
+	width: 72px;
 	min-width: 60px;
 	text-align: center;
 }
 .item-espaco {
-	flex: 1;
+	/* largura fixa para evitar que o input ocupe 100% do espaço */
+	flex: 0 0 72px;
+	width: 72px;
 	min-width: 60px;
 	text-align: center;
+}
+
+/* Rótulo curto ao lado dos campos do inventário */
+.input-note {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--ouro-brilho);
+	background: rgba(223, 177, 91, 0.08);
+	border: 1px solid rgba(223, 177, 91, 0.12);
+	padding: 4px 8px;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	margin-left: 8px;
+	align-self: center;
+	min-width: 44px;
+	text-align: center;
+	font-weight: 600;
 }
 
 /* Botões de exclusão/remover */
