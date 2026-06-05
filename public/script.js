@@ -496,7 +496,7 @@ function calcularTudo() {
 	});
 
 	let bonusCarga = forca * 2; // bônus de carga derivado da Força
-	if (forca < 0) bonusCarga = -1; // proteção para valores inválidos
+	if (forca < 0) bonusCarga = -1 * forca; // proteção para valores abaixo de zero.
 
 	const cargaMaxima = 10 + bonusCarga; // capacidade máxima: base 10 + bônus de força
 	document.getElementById("carga-maxima").innerText = cargaMaxima;
