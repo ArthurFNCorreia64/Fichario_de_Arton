@@ -67,6 +67,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		.getElementById("input-carregar")
 		.addEventListener("change", importarFichaJSON);
 
+	// Novo botão de carregar: aciona o input[type=file] escondido
+	const btnCarregar = document.getElementById("btn-carregar");
+	if (btnCarregar) {
+		btnCarregar.addEventListener("click", () => {
+			const input = document.getElementById("input-carregar");
+			if (input) input.click();
+		});
+	}
+
 	// Botão Reset: limpa o localStorage da ficha e recarrega a página.
 	const btnReset = document.getElementById("btn-reset");
 	if (btnReset) {
@@ -169,6 +178,10 @@ function coletarFichaEmObjeto() {
 		inventario: [],
 		magias: [],
 		ataques: [],
+		// Moeda: tíbares (cada 1000 tíbares ocupa 1 espaço de inventário)
+		tibares: document.getElementById("tibares")
+			? document.getElementById("tibares").value
+			: 0,
 		poderes: document.getElementById("poderes").value,
 		anotacoes: document.getElementById("anotacoes").value,
 	};
@@ -348,6 +361,10 @@ function popularFichaDeObjeto(dados) {
 	document.getElementById("poderes").value = dados.poderes || "";
 	document.getElementById("anotacoes").value = dados.anotacoes || "";
 
+	// Restaura quantidade de tíbares (moeda)
+	const elTibares = document.getElementById("tibares");
+	if (elTibares) elTibares.value = dados.tibares || 0;
+
 	// Re-inicializa seletores/labels dependentes e recalcula tudo
 	inicializarAtributosDasPericias();
 	calcularTudo();
@@ -510,6 +527,15 @@ function calcularTudo() {
 		const espaco = parseFloat(item.querySelector(".item-espaco").value) || 0;
 		cargaAtualAcumulada += qtd * espaco;
 	});
+
+	// Adiciona espaços ocupados pela moeda: cada 1000 tíbares = 1 espaço
+	const elTibaresCalc = document.getElementById("tibares");
+	const tibaresQuantidade = elTibaresCalc
+		? parseInt(elTibaresCalc.value) || 0
+		: 0;
+	const espacosPorTibares = Math.floor(tibaresQuantidade / 1000);
+	cargaAtualAcumulada += espacosPorTibares;
+
 	document.getElementById("carga-atual").innerText =
 		cargaAtualAcumulada.toFixed(1);
 	// --- CÁLCULO AUTOMÁTICO DE ATAQUES ---

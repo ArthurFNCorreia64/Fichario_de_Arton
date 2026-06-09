@@ -34,9 +34,9 @@
 				<!-- Botão que aciona a exportação para JSON -->
 				<button type="button" id="btn-salvar">Exportar Ficha</button>
 				<button type="button" id="btn-reset">Resetar Ficha</button>
-				<!-- Label que abre o seletor de arquivos de backup -->
-				<label id="label-carregar" for="input-carregar">Importar Ficha</label>
-				<!-- Input de arquivo escondido que só é mostrado pelo label -->
+				<!-- Botão que abre o seletor de arquivos de backup (substitui o label) -->
+				<button type="button" id="btn-carregar">Importar Ficha</button>
+				<!-- Input de arquivo escondido. O botão aciona um click nesse input. -->
 				<input
 					type="file"
 					id="input-carregar"
@@ -397,7 +397,7 @@
 			<details class="bloco-ficha" id="secao-pericias" open>
 				<summary class="cabecalho-sanfona"><h2>Perícias</h2></summary>
 				<!-- Nota explicativa: * = só usada se treinada; º = sofre penalidade de armadura -->
-				<p class="nota-pericias" style="margin: 0 0 0.5em 0">
+				<p class="nota-pericias">
 					<strong>Observação:</strong>
 					Perícias marcadas com <strong>*</strong> só podem ser utilizadas
 					quando estiverem treinadas. Perícias marcadas com
@@ -847,6 +847,15 @@
 				<button type="button" id="btn-adicionar-item">
 					Adicionar Novo Item
 				</button>
+				<div class="campo" id="container-tibares">
+					<label for="tibares">Tíbares:</label>
+					<div class="tibares-controls">
+						<input type="number" id="tibares" value="0" min="0" step="1" />
+						<small class="input-note" title="Moeda"
+							>1000 tíbares = 1 espaço</small
+						>
+					</div>
+				</div>
 			</details>
 
 			<!-- Seção de poderes e habilidades especiais, onde o jogador registra recursos importantes da classe. -->

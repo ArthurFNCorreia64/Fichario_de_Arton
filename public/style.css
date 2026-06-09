@@ -526,6 +526,64 @@ input[type="number"] {
 	color: var(--texto-principal);
 }
 
+/* Nota visual para perícias (estilizada para combinar com o tema) */
+.nota-pericias {
+	display: block;
+	background: linear-gradient(
+		90deg,
+		rgba(18, 18, 21, 0.35),
+		rgba(24, 24, 28, 0.12)
+	);
+	border-left: 4px solid var(--vermelho-tormenta);
+	padding: 10px 14px;
+	margin: 0 0 0.5em 0;
+	color: var(--texto-principal);
+	font-size: 0.95rem;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+.nota-pericias strong {
+	color: var(--ouro-velho);
+}
+
+/* Campo de Tíbares (moeda) */
+#container-tibares {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 10px 20px;
+	border-top: 1px solid var(--vermelho-profundo);
+	background-color: rgba(0, 0, 0, 0.03);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+#container-tibares label {
+	margin: 0;
+	font-weight: 700;
+	color: var(--texto-mutado);
+	text-transform: uppercase;
+	font-size: 0.85rem;
+	min-width: 140px;
+}
+#container-tibares input[type="number"] {
+	width: 160px;
+	max-width: 40%;
+}
+.tibares-controls {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+@media (max-width: 768px) {
+	#container-tibares {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	#container-tibares input[type="number"] {
+		width: 100%;
+	}
+}
+
 #lista-inventario,
 #lista-magias {
 	list-style: none;
